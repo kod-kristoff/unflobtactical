@@ -27,7 +27,7 @@
 #include "../engine/particleeffect.h"
 #include "../engine/particle.h"
 
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 #include "../grinliz/glstringutil.h"
 #include "../grinliz/glrectangle.h"
@@ -51,7 +51,7 @@ const ModelResource* MapItemDef::GetModelResource() const
 }
 
 
-const ModelResource* MapItemDef::GetOpenResource() const 
+const ModelResource* MapItemDef::GetOpenResource() const
 {
 	if ( !resourceOpen )
 		return 0;
@@ -163,10 +163,10 @@ Map::~Map()
 }
 
 
-void Map::SetSize( int w, int h )					
+void Map::SetSize( int w, int h )
 {
-	width = w; 
-	height = h; 
+	width = w;
+	height = h;
 }
 
 
@@ -313,12 +313,12 @@ void Map::SetTexture( const Surface* s, int x, int y, int tileRotation )
 	if ( tileRotation == 0 ) {
 		backgroundSurface.BlitImg( target.min, s, src );
 	}
-	else 
+	else
 	{
 		Matrix2I m, inv;
 		MapImageToWorld( x, y, s->Width(), s->Height(), tileRotation, &m );
 		m.Invert( &inv );
-		
+
 		backgroundSurface.BlitImg( target, s, inv );
 	}
 
@@ -331,11 +331,11 @@ void Map::SetTexture( const Surface* s, int x, int y, int tileRotation )
 			Color4U8 rgba2 = Surface::CalcRGB16( backgroundSurface.GetImg16( i*2+0, j*2+1 ) );
 			Color4U8 rgba3 = Surface::CalcRGB16( backgroundSurface.GetImg16( i*2+1, j*2+1 ) );
 
-			int c = (  rgba0.r + rgba0.g + rgba0.g + rgba0.b 
-				     + rgba1.r + rgba1.g + rgba1.g + rgba1.b 
-				     + rgba2.r + rgba2.g + rgba2.g + rgba2.b 
-				     + rgba3.r + rgba3.g + rgba3.g + rgba3.b ) >> 4; 
-			
+			int c = (  rgba0.r + rgba0.g + rgba0.g + rgba0.b
+				     + rgba1.r + rgba1.g + rgba1.g + rgba1.b
+				     + rgba2.r + rgba2.g + rgba2.g + rgba2.b
+				     + rgba3.r + rgba3.g + rgba3.g + rgba3.b ) >> 4;
+
 			GLRELASSERT( c >= 0 && c <= 255 );
 			Color4U8 grey = { (U8)c, (U8)c, (U8)c, 255 };
 
@@ -368,11 +368,11 @@ void Map::SetLightMaps( const Surface* day, const Surface* night, int x, int y, 
 	//GRINLIZ_PERFTRACK
 	GLRELASSERT( day );
 	GLRELASSERT( night );
-	
+
 	GLRELASSERT( day->BytesPerPixel() == 2 );
 	GLRELASSERT( night->BytesPerPixel() == 2 );
-	GLRELASSERT(    day->Width() == night->Width() 
-		      && day->Height() == night->Height() 
+	GLRELASSERT(    day->Width() == night->Width()
+		      && day->Height() == night->Height()
 			  && day->Width() == day->Height() );
 
 	Rectangle2I rect;
@@ -387,7 +387,7 @@ void Map::SetLightMaps( const Surface* day, const Surface* night, int x, int y, 
 		Matrix2I inv, m;
 		MapImageToWorld( x, y, day->Width(), day->Height(), tileRotation, &m );
 		m.Invert( &inv );
-		
+
 		Rectangle2I target;
 		target.Set( x, y, x+day->Width()-1, y+day->Height()-1 );
 
@@ -434,7 +434,7 @@ void Map::GenerateLightMap()
 void Map::GenerateSeenUnseen()
 {
 	GRINLIZ_PERFTRACK;
-	// Test case: 
+	// Test case:
 	// (continue, back) 8.9 k/f
 	// Go to strip creation: 5.9 k/f (and that's total - the code below should get the submit down to 400-500 tris possibly?)
 
@@ -450,7 +450,7 @@ void Map::GenerateSeenUnseen()
 		_arr[ _index++ ] = (_y+1)*(SIZE+1)+(_x1);	\
 		_arr[ _index++ ] = (_y+0)*(SIZE+1)+(_x0);	\
 		_arr[ _index++ ] = (_y+1)*(SIZE+1)+(_x1);	\
-		_arr[ _index++ ] = (_y+0)*(SIZE+1)+(_x1);	
+		_arr[ _index++ ] = (_y+0)*(SIZE+1)+(_x1);
 
 	int countArr[3] = { 0, 0, 0 };
 	nSeenIndex = nUnseenIndex = nPastSeenIndex = 0;
@@ -509,7 +509,7 @@ void Map::GenerateSeenUnseen()
 
 	for( int j=0; j<height; ++j ) {
 		for( int i=0; i<width; ++i ) {
-			if ( fogOfWar.IsSet( i, j ) ) 
+			if ( fogOfWar.IsSet( i, j ) )
 			{
 				U16 c = lightMap->GetImg16( i, j );
 				lightFogMap.SetImg16( i, j, c );
@@ -517,12 +517,12 @@ void Map::GenerateSeenUnseen()
 			else if (    (i>0      && fogOfWar.IsSet( i-1, j ))
 				      || (i<SIZE-1 && fogOfWar.IsSet( i+1, j ))
 					  || (j>0      && fogOfWar.IsSet( i, j-1 ))
-					  || (j<SIZE-1 && fogOfWar.IsSet( i, j+1 )) ) 
+					  || (j<SIZE-1 && fogOfWar.IsSet( i, j+1 )) )
 			{
 				U16 c = lightMap->GetImg16( i, j );
 				lightFogMap.SetImg16( i, j, c );
 			}
-			else 
+			else
 			{
 				lightFogMap.SetImg16( i, j, 0 /*0x3333*/ );
 			}
@@ -553,7 +553,7 @@ void Map::DoDamage( int x, int y, const MapDamageDesc& damage, Rectangle2I* dBou
 
 void Map::DoDamage( Model* m, const MapDamageDesc& damageDesc, Rectangle2I* dBounds, Vector2I* explodes )
 {
-	if ( m->IsFlagSet( Model::MODEL_OWNED_BY_MAP ) ) 
+	if ( m->IsFlagSet( Model::MODEL_OWNED_BY_MAP ) )
 	{
 		MapItem* item = quadTree.FindItem( m );
 		//GLRELASSERT( ( item->flags & MapItem::MI_IS_LIGHT ) == 0 );
@@ -564,7 +564,7 @@ void Map::DoDamage( Model* m, const MapDamageDesc& damageDesc, Rectangle2I* dBou
 		GLOUTPUT(( "map damage '%s' (%d,%d) dam=%d hp=%d\n", itemDef.Name(), item->XForm().x, item->XForm().y, hp, item->hp ));
 
 		bool destroyed = false;
-		if ( itemDef.CanDamage() && item->DoDamage(hp) ) 
+		if ( itemDef.CanDamage() && item->DoDamage(hp) )
 		{
 			if ( dBounds ) {
 				Rectangle2I r = item->MapBounds();
@@ -635,7 +635,7 @@ void Map::DoSubTurn( Rectangle2I* change, float fireDamagePerSubTurn )
 					MapDamageDesc d = { fireDamagePerSubTurn, 0 };
 					Vector2I explodes = { -1, -1 };
 					DoDamage( x, y, d, change, &explodes );	// FIXME BUG Burning objects don't blow up. Just needs code, and
-															// points out that the damage code probably shouldn't be in the 
+															// points out that the damage code probably shouldn't be in the
 															// map class.
 
 					MapDamageDesc f = { 0, fireDamagePerSubTurn };
@@ -820,7 +820,7 @@ Map::MapItem* Map::AddItem( int x, int y, int rotation, const MapItemDef* def, i
 		GLRELASSERT( 0 );
 		return 0;
 	}
-		
+
 	bool metadata = false;
 
 	Matrix2I xform;
@@ -829,7 +829,7 @@ Map::MapItem* Map::AddItem( int x, int y, int rotation, const MapItemDef* def, i
 	WorldToModel( xform, false, &modelPos );
 
 	// Check for meta data.
-	if (    StrEqual( def->Name(), "guard") 
+	if (    StrEqual( def->Name(), "guard")
 		 || StrEqual( def->Name(), "scout" )
 		 || StrEqual( def->Name(), "pawn" ) )
 	{
@@ -895,9 +895,9 @@ Map::MapItem* Map::AddItem( int x, int y, int rotation, const MapItemDef* def, i
 	GLRELASSERT( mapBounds.min.x >= 0 && mapBounds.max.x < 256 );	// using int8
 	GLRELASSERT( mapBounds.min.y >= 0 && mapBounds.max.y < 256 );	// using int8
 	item->mapBounds8.Set( mapBounds.min.x, mapBounds.min.y, mapBounds.max.x, mapBounds.max.y );
-	
+
 	item->next = 0;
-	
+
 	quadTree.Add( item );
 
 	const ModelResource* res = 0;
@@ -935,7 +935,7 @@ Map::MapItem* Map::AddItem( int x, int y, int rotation, const MapItemDef* def, i
 
 
 void Map::DeleteItem( MapItem* item )
-{	
+{
 	GLRELASSERT( item );
 
 	// Delete the light first, if it exists:
@@ -964,7 +964,7 @@ void Map::Save( XMLPrinter* printer )
 	if ( !Engine::mapMakerMode ) {
 
 		printer->OpenElement( "Seen" );
-	
+
 		char buf[BitArray<Map::SIZE, Map::SIZE, 1>::STRING_SIZE];
 		pastSeenFOW.ToString( buf );
 		printer->PushText( buf );
@@ -1049,7 +1049,7 @@ void Map::Load( const XMLElement* mapElement )
 			image->QueryIntAttribute( "tileRotation", &tileRotation );
 
 			// store it to save later:
-			const char* name = image->Attribute( "name" ); 
+			const char* name = image->Attribute( "name" );
 			GLRELASSERT( nImageData < MAX_IMAGE_DATA );
 			imageData[ nImageData ].x = x;
 			imageData[ nImageData ].y = y;
@@ -1057,7 +1057,7 @@ void Map::Load( const XMLElement* mapElement )
 			imageData[ nImageData ].tileRotation = tileRotation;
 			imageData[ nImageData ].name = name;
 			++nImageData;
-			
+
 			ImageManager* imageManager = ImageManager::Instance();
 
 			Surface background, day, night;
@@ -1070,7 +1070,7 @@ void Map::Load( const XMLElement* mapElement )
 			imageManager->LoadImage( buffer, &night );
 
 			SetTexture( &background, x*512/64, y*512/64, tileRotation );
-			SetLightMaps( &day, &night, x, y, tileRotation );			
+			SetLightMaps( &day, &night, x, y, tileRotation );
 		}
 	}
 
@@ -1220,7 +1220,7 @@ bool Map::ProcessDoors( const grinliz::Vector2I* openers, int nOpeners )
 
 void Map::DumpTile( int x, int y )
 {
-	if ( InRange( x, 0, SIZE-1 ) && InRange( y, 0, SIZE-1 )) 
+	if ( InRange( x, 0, SIZE-1 ) && InRange( y, 0, SIZE-1 ))
 	{
 		int i=0;
 		MapItem* root = quadTree.FindItems( x, y, 0, 0 );
@@ -1252,13 +1252,13 @@ void Map::DrawPath( int mode )
 			float y = (float)j;
 
 			int path = GetPathMask( mode == 2 ? VISIBILITY_TYPE : PATH_TYPE, i, j );
-			if ( path == 0 ) 
+			if ( path == 0 )
 				continue;
 
 			Vector3F red[12];
 			Vector3F green[12];
 			static const uint16_t index[12] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-			int	nRed = 0, nGreen = 0;	
+			int	nRed = 0, nGreen = 0;
 			const float EPS = 0.2f;
 
 			Vector3F edge[5] = {
@@ -1288,7 +1288,7 @@ void Map::DrawPath( int mode )
 			}
 			GLRELASSERT( nRed <= 12 );
 			GLRELASSERT( nGreen <= 12 );
-			
+
 			GPUStream stream;
 			stream.stride = sizeof(Vector3F);
 			stream.nPos = 3;
@@ -1357,7 +1357,7 @@ void Map::CalcVisPathMap( grinliz::Rectangle2I& _bounds )
 			// Walk the object in object space & write to world.
 			for( int j=0; j<itemDef.cy; ++j ) {
 				for( int i=0; i<itemDef.cx; ++i ) {
-					
+
 					Vector2I obj = { i, j };
 					Vector2I world = mat * obj;
 
@@ -1413,7 +1413,7 @@ float Map::LeastCostEstimate( void* stateStart, void* stateEnd )
 }
 
 
-bool Map::Connected4(	ConnectionType c, 
+bool Map::Connected4(	ConnectionType c,
 						const grinliz::Vector2<S16>& pos,
 						const grinliz::Vector2<S16>& delta )
 {
@@ -1448,7 +1448,7 @@ bool Map::Connected4(	ConnectionType c,
 }
 
 
-bool Map::Connected8(	ConnectionType c, 
+bool Map::Connected8(	ConnectionType c,
 						const grinliz::Vector2<S16>& pos,
 						const grinliz::Vector2<S16>& delta )
 {
@@ -1599,8 +1599,8 @@ bool Map::InStateCostBounds( int x, int y ) const
 
 
 void Map::ShowNearPath(	const grinliz::Vector2I& unitPos,
-						const void* user, 
-						const grinliz::Vector2<S16>& start, 
+						const void* user,
+						const grinliz::Vector2<S16>& start,
 					    float maxCost,
 					    const grinliz::Vector2F* range,
 						const grinliz::Vector2<S16>* dest )
@@ -1617,7 +1617,7 @@ void Map::ShowNearPath(	const grinliz::Vector2I& unitPos,
 
 		GLASSERT( total <= maxCost );
 		if ( result != micropather::MicroPather::SOLVED ) {
-			mpVector.clear();			
+			mpVector.clear();
 		}
 	}
 	microPather->SolveForNearStates( VecToState( start ), &stateCostArr, maxCost );
@@ -1730,7 +1730,7 @@ void Map::SetLanderFlight( float normal )
 		Model* model = lander->model;
 		Vector3F pos = model->Pos();
 		float h = landerFlight*landerFlight * 10.0f;
-		
+
 		const Rectangle3F& bounds = model->AABB();
 		Vector3F p[4] = {	{ bounds.min.x, h, bounds.min.z },
 							{ bounds.max.x, h, bounds.min.z },
@@ -1787,7 +1787,7 @@ void Map::QuadTree::Add( MapItem* item )
 //				item->mapBounds8.min.x, item->mapBounds8.min.y, item->mapBounds8.max.x, item->mapBounds8.max.y,
 //				d ));
 
-	//GLOUTPUT(( "Depth: %2d %2d %2d %2d %2d\n", 
+	//GLOUTPUT(( "Depth: %2d %2d %2d %2d %2d\n",
 	//		   depthUse[0], depthUse[1], depthUse[2], depthUse[3], depthUse[4] ));
 }
 
@@ -1828,7 +1828,7 @@ Map::MapItem* Map::QuadTree::FindItems( const Rectangle2I& bounds, int required,
 	Rectangle2<U8> bounds8;
 	bounds8.Set( bounds.min.x, bounds.min.y, bounds.max.x, bounds.max.y );
 
-	for( int depth=0; depth<QUAD_DEPTH; ++depth ) 
+	for( int depth=0; depth<QUAD_DEPTH; ++depth )
 	{
 		// Translate into coordinates for this node level:
 		int x0 = WorldToNode( bounds.min.x, depth );
@@ -1851,7 +1851,7 @@ Map::MapItem* Map::QuadTree::FindItems( const Rectangle2I& bounds, int required,
 					}
 				}
 				else {
-					while( pItem ) { 
+					while( pItem ) {
 						if (    ( ( pItem->flags & required) == required )
 							 && ( ( pItem->flags & excluded ) == 0 )
 							 && pItem->mapBounds8.Intersect( bounds8 ) )
@@ -1898,7 +1898,7 @@ int Map::QuadTree::CalcNode( const Rectangle2<U8>& bounds, int* d )
 {
 	int offset = 0;
 
-	for( int depth=QUAD_DEPTH-1; depth>0; --depth ) 
+	for( int depth=QUAD_DEPTH-1; depth>0; --depth )
 	{
 		int x0 = WorldToNode( bounds.min.x, depth );
 		int y0 = WorldToNode( bounds.min.y, depth );
@@ -1930,7 +1930,7 @@ void Map::QuadTree::MarkVisible( const grinliz::BitArray<Map::SIZE, Map::SIZE, 1
 	MapItem* root = FindItems( mapBounds, 0, 0 );
 
 	for( MapItem* item=root; item; item=item->next ) {
-		
+
 		Rectangle2I b = item->MapBounds();
 		if ( b.min.x > 0 ) b.min.x--;
 		if ( b.max.x < SIZE-1 ) b.max.x++;

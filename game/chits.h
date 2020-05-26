@@ -19,7 +19,7 @@
 #include "../grinliz/gltypes.h"
 #include "../grinliz/gldebug.h"
 #include "../grinliz/glvector.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 #include "unit.h"
 
@@ -34,7 +34,7 @@ class CityChit;
 class ChitBag;
 
 
-template < class T > 
+template < class T >
 class Cylinder
 {
 public:
@@ -123,7 +123,7 @@ public:
 
 	virtual bool Parked() const				{ return false; }
 
-	grinliz::Vector2I MapPos() const { 
+	grinliz::Vector2I MapPos() const {
 		// Bug fix: beware negative numbers. -.5 rounds to 0...which is very wrong.
 		grinliz::Vector2F vf =  Cylinder<float>::Normalize( pos );
 		grinliz::Vector2I v  = { (int)vf.x, (int)vf.y };
@@ -131,7 +131,7 @@ public:
 	}
 	void SetMapPos( int x, int y );
 	void SetMapPos( const grinliz::Vector2I& pos )	{ SetMapPos( pos.x, pos.y ); }
-	
+
 	const grinliz::Vector2F Pos() const { return Cylinder<float>::Normalize( pos ); }
 	void SetPos( float x, float y );
 
@@ -183,35 +183,35 @@ public:
 		BASE,
 		NUM_TYPES
 	};
-	UFOChit(	SpaceTree* tree, 
-				int type, 
-				const grinliz::Vector2F& start, 
+	UFOChit(	SpaceTree* tree,
+				int type,
+				const grinliz::Vector2F& start,
 				const grinliz::Vector2F& dest );
 	~UFOChit();
 
 	virtual int DoTick( U32 deltaTime );
 
 	virtual UFOChit* IsUFOChit()		{ return this; }
-	
+
 	virtual bool Parked() const			{ return ai >= AI_CRASHED; }
 	bool Flying() const					{ return ai == AI_TRAVELLING || ai == AI_ORBIT; }
 	int Type() const					{ return type; }
-	bool CanSendLander( bool battleshipTech ) const			
+	bool CanSendLander( bool battleshipTech ) const
 	{
 		if ( type == BATTLESHIP && !battleshipTech )
 			return false;
-		if (    ai == AI_CRASHED 
-			 || ai == AI_CITY_ATTACK 
-			 || ai == AI_CROP_CIRCLE 
+		if (    ai == AI_CRASHED
+			 || ai == AI_CITY_ATTACK
+			 || ai == AI_CROP_CIRCLE
 			 || ai == AI_OCCUPATION
 			 || ai == AI_PARKED )
 			return true;
 		return false;
 	}
 
-	void SetAI( int _ai ); 
+	void SetAI( int _ai );
 	int AI() const						{ return ai; }
-	
+
 	float Speed() const					{ return speed; }
 	grinliz::Vector2F Velocity() const;
 	float Radius() const;
@@ -232,7 +232,7 @@ private:
 	int ai;
 	float speed;
 	float hp;
-	
+
 	U32 effectTimer;
 	U32 jobTimer;
 
@@ -279,7 +279,7 @@ private:
 };
 
 
-class BaseChit : public Chit 
+class BaseChit : public Chit
 {
 public:
 	enum {
@@ -305,7 +305,7 @@ public:
 	const char* Name() const;
 
 	Storage* GetStorage() { return storage; }
-	
+
 	Unit* GetUnits() { return units; }
 	int NumUnits() const;
 	bool IssueUnitWarning() const;
@@ -316,13 +316,13 @@ public:
 
 	bool IsFacilityComplete( int i )	const	{ return facilityStatus[i] == 0; }
 	//bool IsFacilityInProgress( int i )			{ return facilityStatus[i] > 0; }
-	void BuildFacility( int i )					
-	{ 
-		GLASSERT( facilityStatus[i] < 0 ); 
+	void BuildFacility( int i )
+	{
+		GLASSERT( facilityStatus[i] < 0 );
 #ifdef IMMEDIATE_BUY
 		facilityStatus[i] = 0;
 #else
-		facilityStatus[i] = BUILD_TIME*1000; 
+		facilityStatus[i] = BUILD_TIME*1000;
 #endif
 	}
 
@@ -392,7 +392,7 @@ public:
 	Chit* Begin() 	{ return sentinel.next; }
 	Chit* End() 	{ return &sentinel; }
 
-	Chit* GetChit( int id ) { 
+	Chit* GetChit( int id ) {
 		if ( id == 0 ) return 0;
 		for( Chit* it=Begin(); it != End(); it=it->Next() ) {
 			if ( it->ID() == id ) {
@@ -426,7 +426,7 @@ public:
 	CargoChit*	GetCargoComingFrom( int type, const grinliz::Vector2I& from );
 	Chit*		GetParkedChitAt( const grinliz::Vector2I& pos ) const;
 
-	void SetBattle( const UFOChit* ufo, const CargoChit* lander, int scenario );	
+	void SetBattle( const UFOChit* ufo, const CargoChit* lander, int scenario );
 	UFOChit*	GetBattleUFO()					{ Chit* chit = GetChit( battleUFOID ); return (chit) ? chit->IsUFOChit() : 0; }
 	CargoChit*	GetBattleLander()				{ Chit* chit = GetChit( battleLanderID ); return (chit) ? chit->IsCargoChit() : 0; }
 	UFOChit*	GetUFOBase();
@@ -438,9 +438,9 @@ public:
 	};
 
 	virtual void Save( tinyxml2::XMLPrinter* );
-	void Load(	const tinyxml2::XMLElement* doc, 
-				SpaceTree* tree, 
-				const ItemDefArr& arr, 
+	void Load(	const tinyxml2::XMLElement* doc,
+				SpaceTree* tree,
+				const ItemDefArr& arr,
 				Game* game );
 
 private:

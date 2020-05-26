@@ -19,7 +19,7 @@
 
 #include "../engine/loosequadtree.h"
 #include "../grinliz/glrectangle.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 using namespace grinliz;
 using namespace tinyxml2;
@@ -40,7 +40,7 @@ static const int EXPLODES = MapItemDef::EXPLODES;
 static const int ROTATES = MapItemDef::ROTATES;
 
 /*
-	Totally non-obvious path/visibility coordinates. Some sort of axis flipping goes 
+	Totally non-obvious path/visibility coordinates. Some sort of axis flipping goes
 	on in here somewhere. But from the point of view of the modeller (AC3D) the bits are:
 
 				bit	value
@@ -49,8 +49,8 @@ static const int ROTATES = MapItemDef::ROTATES;
 	North	+z	3	4
 	West	-x	4	8
 */
-	
-const MapItemDef TacMap::itemDefArr[NUM_ITEM_DEF] = 
+
+const MapItemDef TacMap::itemDefArr[NUM_ITEM_DEF] =
 {
 		// model		open			destroyed	cx, cz	hp			material	pather
 	{	"tree",			0,				"stump",	1,	1,	HP_MEDLOW,	BURN,		"f", "0", OBSCURES },
@@ -73,7 +73,7 @@ const MapItemDef TacMap::itemDefArr[NUM_ITEM_DEF] =
 	{	"barrel2",		0,				0,			1,	1,	HP_LOW,		FASTBURN,	"f", "0" },
 	{	"crate0",		0,				0,			1,	1,	HP_LOW,		BURN,		"f", "0", 0 },
 	{	"crate1",		0,				0,			1,	1,	HP_MED,		BURN,		"f", "f", 0 },
-	{	"crate2",		0,				0,			1,	1,	HP_LOW,		BURN,		"f", "0", EXPLODES },	
+	{	"crate2",		0,				0,			1,	1,	HP_LOW,		BURN,		"f", "0", EXPLODES },
 	{	"cannister0",	0,				0,			1,  1,  HP_LOW,		BURN,		"f", "0", EXPLODES },
 	{	"cannister1",	0,				0,			1,  1,  HP_LOW,		FASTBURN,	"f", "0" },
 	{	"computerdesk",	0,				0,			1,	1,	HP_LOW,		BURN,		"f", "0" },
@@ -118,14 +118,14 @@ const MapItemDef TacMap::itemDefArr[NUM_ITEM_DEF] =
 
 	{	"pyramid_2",	0,				0,			2,	2,	INDESTRUCT,	0,			"ffff", "0000" },
 	{	"pyramid_4",	0,				0,			4,	4,	INDESTRUCT,	0,			"ffff" "ffff" "ffff" "ffff", "0000" "0ff0" "0ff0" "0000" },
-	{	"pyramid_8",	0,				0,			8,	8,	INDESTRUCT,	0,			"fff00fff" "ffffffff" "ffffffff" "0ffffff0" "0ffffff0" "ffffffff" "ffffffff" "fff00fff", 
+	{	"pyramid_8",	0,				0,			8,	8,	INDESTRUCT,	0,			"fff00fff" "ffffffff" "ffffffff" "0ffffff0" "0ffffff0" "ffffffff" "ffffffff" "fff00fff",
 																					"fff00fff" "fff00fff" "fff00fff" "00000000" "00000000" "fff00fff" "fff00fff" "fff00fff" },
 	{	"obelisk",		0,				0,			1,	1,	HP_HIGH,	0,			"f", "0", OBSCURES },
 	{	"temple",		0,				0,			2,  1,  INDESTRUCT, 0,			"ff", "ff" },
 
 	// model		open			destroyed	cx, cz	hp				material	pather
 	{	"ufo_WallOut",	0,				0,			1,	1,	HP_STEEL,	0,			"1", "1" },
-	{	"ufo_WallCurve1I", 0,			0,			1,	1,	INDESTRUCT,	0,			"f", "9" }, 
+	{	"ufo_WallCurve1I", 0,			0,			1,	1,	INDESTRUCT,	0,			"f", "9" },
 	{	"ufo_WallCurve4", 0,			0,			4,	4,	INDESTRUCT,	0,			"0002" "0003" "0030" "1300",	// pather
 																					"0002" "0003" "0030" "1300" },	// visibility
 	{	"ufo_WallCurve8", 0,			0,			8,	8,	INDESTRUCT,	0,			"00000002" "00000002" "0000000f" "0000000f" "000000f0" "00000f00" "0000f000" "11ff0000",
@@ -149,7 +149,7 @@ const MapItemDef TacMap::itemDefArr[NUM_ITEM_DEF] =
 
 		// model		open			destroyed	cx, cz	hp			material	pather
 	{	"lander",		0,				0,			6,	6,	INDESTRUCT,	0,			"00ff00" "00ff00" "ff00ff" "ff00ff" "ff00ff" "ff00ff",
-																					"00ff00" "00ff00" "0f00f0" "0f00f0" "0f00f0" "0f00f0", 
+																					"00ff00" "00ff00" "0f00f0" "0f00f0" "0f00f0" "0f00f0",
 																					0 },
 	{	"guard",		0,				0,			1,  1,  INDESTRUCT, 0,			"0", "0" },
 	{	"scout",		0,				0,			1,  1,  INDESTRUCT, 0,			"0", "0" },
@@ -187,7 +187,7 @@ TacMap::~TacMap()
 }
 
 
-void TacMap::SetSize( int w, int h )					
+void TacMap::SetSize( int w, int h )
 {
 	Map::SetSize( w, h );
 
@@ -208,11 +208,11 @@ void TacMap::SetSize( int w, int h )
 void TacMap::InitWalkingMapAtoms( gamui::RenderAtom* atom, int nWalkingMaps )
 {
 	atom[0] = Game::CalcIconAtom( ICON_GREEN_WALK_MARK );
-	atom[1] = Game::CalcIconAtom( ICON_YELLOW_WALK_MARK ); 
-	atom[2] = Game::CalcIconAtom( ICON_ORANGE_WALK_MARK ); 
-	atom[3] = Game::CalcIconAtom( ICON_GREEN_WALK_MARK ); 
-	atom[4] = Game::CalcIconAtom( ICON_YELLOW_WALK_MARK ); 
-	atom[5] = Game::CalcIconAtom( ICON_ORANGE_WALK_MARK ); 
+	atom[1] = Game::CalcIconAtom( ICON_YELLOW_WALK_MARK );
+	atom[2] = Game::CalcIconAtom( ICON_ORANGE_WALK_MARK );
+	atom[3] = Game::CalcIconAtom( ICON_GREEN_WALK_MARK );
+	atom[4] = Game::CalcIconAtom( ICON_YELLOW_WALK_MARK );
+	atom[5] = Game::CalcIconAtom( ICON_ORANGE_WALK_MARK );
 
 	if ( nWalkingMaps == 1 ) {
 		atom[0].renderState = (const void*) RENDERSTATE_MAP_TRANSLUCENT;
@@ -301,7 +301,7 @@ void TacMap::PopLocation( int team, bool guard, grinliz::Vector2I* pos, float* r
 
 		Vector2I obj = { 2 + (nLanderPos & 1), 5 - (nLanderPos / 2) };
 		Vector2I world = xform * obj;
-		
+
 		*pos = world;
 		*rotation = lander->ModelRot();
 		++nLanderPos;
@@ -434,7 +434,7 @@ void TacMap::SubLoad( const XMLElement* mapElement )
 				const MapItemDef* mid = GetItemDef( name );
 				if ( mid ) {
 					index = mid - itemDefArr;
-				} 
+				}
 				else {
 					GLOUTPUT(( "Could not load item '%s'\n", name ));
 				}
@@ -546,7 +546,7 @@ void TacMap::ReleaseStorage( Storage* storage )
 	Vector2I v = { storage->X(), storage->Y() };
 	if ( zRotate ) {
 		model->SetRotation( 90.0f, 2 );
-		
+
 		int yRot = Random::Hash( &v, sizeof(v) ) % 360;	// generate a random yet consistent rotation
 
 		model->SetRotation( (float)yRot, 1 );

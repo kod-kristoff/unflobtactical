@@ -26,7 +26,7 @@
 #include "gamelimits.h"
 #include "stats.h"
 #include "../grinliz/glstringutil.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 class ModelResource;
 class TiXmlElement;
@@ -97,7 +97,7 @@ public:
 	virtual const ArmorItemDef* IsArmor() const { return 0; }
 	bool IsAlien() const { return isAlien; }
 	bool Hide() const    { return deco == 32; /*DECO_NONE;*/ }
-	
+
 	// Most items are 1 thing: a gun, armor, etc. But clips are formed of collections.
 	// It may take 10 rounds to form a clip.
 	virtual int DefaultRounds() const	{ return 1; }
@@ -172,7 +172,7 @@ public:
 	struct Weapon {
 		bool InUse() const { return desc && *desc; }
 
-		const char* desc;				
+		const char* desc;
 		const char* clipItemDefName;
 		int flags;						// WEAPON_AUTO, etc.
 		float damage;					// damage done by weapon, 1.0 is normal
@@ -197,32 +197,32 @@ public:
 
 	void RenderWeapon(	int mode,
 						ParticleSystem*,
-						const grinliz::Vector3F& p0, 
+						const grinliz::Vector3F& p0,
 						const grinliz::Vector3F& p1,
 						bool impact,
 						U32 currentTime,
 						U32* doneTime ) const;
 
 	bool CompatibleClip( const ItemDef* itemDef, int* which ) const;
-	
+
 	// Basic damage for this weapon.
 	void DamageBase( int mode, DamageDesc* damageArray ) const;
 	// Amount of time it takes to use this weapon. (Does not depend on the Unit.)
 	float TimeUnits( int mode ) const;
-	
+
 	// Accuracy of the weapon. 1.0 is normal, higher is worse.
 	Accuracy CalcAccuracy( float unitAccuracy, int mode ) const;
 
 	static void AddAccData( float predicted, bool hit );
 	static void CurrentAccData( float* predicted, float* actual );
 
-	// Statistics for this weapon. 
-	bool FireStatistics( int mode, 
-						 float unitAccuracy, 
+	// Statistics for this weapon.
+	bool FireStatistics( int mode,
+						 float unitAccuracy,
 						 const BulletTarget& target,
 						 float* chanceToHit,				// chance a round hits
 						 float* chanceAnyHit,				// chance any round (of 1 or 3) hits
-						 float* totalDamage,			
+						 float* totalDamage,
 						 float* damagePerTU ) const;		// damagePerTU = f( damage, TU, accuracyRadius, distance )
 
 private:
@@ -237,7 +237,7 @@ class ClipItemDef : public ItemDef
 public:
 
 	virtual const ClipItemDef* IsClip() const { return this; }
-	
+
 	virtual int DefaultRounds() const	{ return defaultRounds; }
 
 	bool alien;
@@ -315,7 +315,7 @@ public:
 	void operator=( const Storage& rhs )	{
 		this->x = rhs.x;
 		this->y = rhs.y;
-		//this->itemDefArr = rhs.itemDefArr;	
+		//this->itemDefArr = rhs.itemDefArr;
 		GLASSERT( &this->itemDefArr == &rhs.itemDefArr );
 		memcpy( rounds, rhs.rounds, sizeof(int)*EL_MAX_ITEM_DEFS );
 	}
@@ -347,7 +347,7 @@ public:
 	// 2. This storage contains any weapon and rounds for that weapon
 	// Returns the weapon def that is re-supplied.
 	const WeaponItemDef* IsResupply( const WeaponItemDef* weapon ) const;
-	
+
 	int GetCount( const ItemDef* ) const;	// the number of items, corrected for the rounds
 	int GetCount( int index ) const;
 

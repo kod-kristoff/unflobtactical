@@ -19,7 +19,7 @@
 #include "../grinliz/gldebug.h"
 #include "../grinliz/gltypes.h"
 #include "../grinliz/glstringutil.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include <stdio.h>
 
 class TiXmlElement;
@@ -43,7 +43,7 @@ public:
 protected:
 	SettingsManager( const char* path );
 	virtual ~SettingsManager()	{ instance = 0; }
-	
+
 	void Load();
 	void Save();
 

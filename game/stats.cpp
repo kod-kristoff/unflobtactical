@@ -17,7 +17,7 @@
 #include "../grinliz/glutil.h"
 #include "../grinliz/glrandom.h"
 #include "gamelimits.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "unit.h"
 #include "../grinliz//glgeometry.h"
 #include "../engine/serialize.h"
@@ -26,7 +26,7 @@ using namespace grinliz;
 using namespace tinyxml2;
 
 
-int Stats::GenStat( grinliz::Random* rand, int min, int max ) 
+int Stats::GenStat( grinliz::Random* rand, int min, int max )
 {
 	int s = min + grinliz::LRintf( (float)(max-min) * rand->DiceUniform( 3, 6 ) );
 	return Clamp( s, 1, TRAIT_MAX );
@@ -135,7 +135,7 @@ void BulletSpread::Generate( U32 seed, const Accuracy& accuracy, float distance,
 	spread.x *= distance * accuracy.RadiusAtOne();
 	spread.y *= distance * accuracy.RadiusAtOne();
 
-	Vector3F normal = dir; 
+	Vector3F normal = dir;
 	normal.Normalize();
 
 	const static Vector3F UP = { 0, 1, 0 };
@@ -165,7 +165,7 @@ float BulletSpread::ComputePercent( const Accuracy& accuracy, const BulletTarget
 	GLASSERT( target.height > 0 );
 
 	Vector2F center = { target.width*0.50f, target.height*0.65f };
-	
+
 	Rectangle2F board( 0, 0, target.width, target.height );
 	Rectangle2F bullseye(	center.x-target.width*EPS, center.y-target.height*EPS,
 							center.x+target.width*EPS, center.y+target.height*EPS );

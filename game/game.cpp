@@ -46,7 +46,7 @@
 #include "../grinliz/glutil.h"
 #include "../grinliz/glperformance.h"
 #include "../grinliz/glstringutil.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "../version.h"
 
 #include "ufosound.h"
@@ -91,14 +91,14 @@ Game::Game( int width, int height, int rotation, const char* path ) :
 
 	savePath = path;
 	char c = savePath[savePath.size()-1];
-	if ( c != '\\' && c != '/' ) {	
+	if ( c != '\\' && c != '/' ) {
 #ifdef WIN32
 		savePath += "\\";
 #else
 		savePath += "/";
 #endif
-	}	
-	
+	}
+
 	Init();
 
 	PushScene( INTRO_SCENE, 0 );
@@ -121,16 +121,16 @@ Game::Game( int width, int height, int rotation, const char* path, const TileSet
 	GLASSERT( Engine::mapMakerMode == true );
 	savePath = path;
 	char c = savePath[savePath.size()-1];
-	if ( c != '\\' && c != '/' ) {	
+	if ( c != '\\' && c != '/' ) {
 #ifdef WIN32
 		savePath += '\\';
 #else
 		savePath += '/';
 #endif
-	}	
-	
+	}
+
 	Init();
-	
+
 	char buffer[128];
 	SNPrintf( buffer, 128, "%4s_%2d_%4s_%02d", base.set, base.size, base.type, base.variation );
 
@@ -138,7 +138,7 @@ Game::Game( int width, int height, int rotation, const char* path, const TileSet
 	mapmaker_xmlFile += buffer;
 	mapmaker_xmlFile += ".xml";
 
-	GLString	texture  = buffer; 
+	GLString	texture  = buffer;
 				texture += "_TEX";
 	GLString	dayMap   = buffer;
 				dayMap  += "_DAY";
@@ -156,7 +156,7 @@ Game::Game( int width, int height, int rotation, const char* path, const TileSet
 	doc.LoadFile( mapmaker_xmlFile.c_str() );
 	if ( !doc.Error() )
 		engine->GetMap()->Load( doc.FirstChildElement( "Map" ) );
-	
+
 	engine->CameraLookAt( (float)engine->GetMap()->Width()*0.5f, (float)engine->GetMap()->Height()*0.5f, engine->camera.PosWC().y );
 }
 
@@ -353,7 +353,7 @@ void Game::PopAllAndLoad( int slot )
 }
 
 
-void Game::PushPopScene() 
+void Game::PushPopScene()
 {
 	if ( scenePopQueued || sceneQueued.sceneID != NUM_SCENES ) {
 		TextureManager::Instance()->ContextShift();
@@ -382,11 +382,11 @@ void Game::PushPopScene()
 		if( HasSaveFile( SAVEPATH_GEO, loadSlot ) )
 			sceneQueued.sceneID = Game::GEO_SCENE;
 		else if ( HasSaveFile( SAVEPATH_TACTICAL, loadSlot ) )
-			sceneQueued.sceneID = Game::BATTLE_SCENE;		
+			sceneQueued.sceneID = Game::BATTLE_SCENE;
 	}
 
-	if (    sceneQueued.sceneID == NUM_SCENES 
-		 && sceneStack.Empty() ) 
+	if (    sceneQueued.sceneID == NUM_SCENES
+		 && sceneStack.Empty() )
 	{
 		// Unwind and full reset.
 		delete engine;
@@ -397,7 +397,7 @@ void Game::PushPopScene()
 		PushScene( INTRO_SCENE, 0 );
 		PushPopScene();
 	}
-	else if ( sceneQueued.sceneID != NUM_SCENES ) 
+	else if ( sceneQueued.sceneID != NUM_SCENES )
 	{
 		GLASSERT( sceneQueued.sceneID < NUM_SCENES );
 
@@ -418,12 +418,12 @@ void Game::PushPopScene()
 		node->scene->Activate();
 		node->scene->Resize();
 
-		if ( oldTop ) 
+		if ( oldTop )
 			oldTop->scene->ChildActivated( node->sceneID, node->scene, node->data );
 
-		if (    node->scene->CanSave() 
-			 && !Engine::mapMakerMode 
-			 && sceneStack.Size() == 1 ) 
+		if (    node->scene->CanSave()
+			 && !Engine::mapMakerMode
+			 && sceneStack.Size() == 1 )
 		{
 			SavePathType savePath = node->scene->CanSave();
 			if ( HasSaveFile( savePath, loadSlot ) ) {
@@ -516,7 +516,7 @@ void Game::Load( const XMLDocument& doc )
 
 
 FILE* Game::GameSavePath( SavePathType type, SavePathMode mode, int slot ) const
-{	
+{
 	grinliz::GLString str( savePath );
 	if ( type == SAVEPATH_GEO )
 		str += "geogame";
@@ -583,7 +583,7 @@ void Game::Save( int slot, bool saveGeo, bool saveTac )
 				// Somewhat scary c code to get the current time.
 				char buf[40];
 			    time_t rawtime;
-				struct tm * timeinfo;  
+				struct tm * timeinfo;
 				time ( &rawtime );
 				timeinfo = localtime ( &rawtime );
 				const char* atime = asctime( timeinfo );
@@ -594,7 +594,7 @@ void Game::Save( int slot, bool saveGeo, bool saveTac )
 				printer.PushAttribute( "timestamp", buf );
 
 				node->scene->Save( &printer );
-	
+
 				printer.CloseElement();		// Game
 				fclose( fp );
 			}
@@ -642,7 +642,7 @@ void Game::DoTick( U32 _currentTime )
 		Rectangle2I clip2D, clip3D;
 		int renderPass = scene->RenderPass( &clip3D, &clip2D );
 		GLASSERT( renderPass );
-	
+
 		if ( renderPass & Scene::RENDER_3D ) {
 			GRINLIZ_PERFTRACK_NAME( "Game::DoTick 3D" );
 			screenport.SetPerspective( clip3D.Width() > 0 ? &clip3D : 0 );
@@ -652,7 +652,7 @@ void Game::DoTick( U32 _currentTime )
 				engine->GetMap()->DrawPath( mapmaker_showPathing );
 			}
 			scene->Draw3D();
-		
+
 			const grinliz::Vector3F* eyeDir = engine->camera.EyeDir3();
 			ParticleSystem* particleSystem = ParticleSystem::Instance();
 			particleSystem->Update( deltaTime, currentTime );
@@ -663,7 +663,7 @@ void Game::DoTick( U32 _currentTime )
 			GRINLIZ_PERFTRACK_NAME( "Game::DoTick UI" );
 
 			// UI Pass
-			screenport.SetUI( clip2D.IsValid() ? &clip2D : 0 ); 
+			screenport.SetUI( clip2D.IsValid() ? &clip2D : 0 );
 			if ( renderPass & Scene::RENDER_3D ) {
 				scene->RenderGamui3D();
 			}
@@ -684,15 +684,15 @@ void Game::DoTick( U32 _currentTime )
 	if ( !suppressText ) {
 		UFOText* ufoText = UFOText::Instance();
 		if ( debugLevel >= 1 ) {
-			ufoText->Draw(	0,  Y, "#%d %5.1ffps vbo=%d ps=%d ogl=%d", 
-							VERSION, 
-							framesPerSecond, 
+			ufoText->Draw(	0,  Y, "#%d %5.1ffps vbo=%d ps=%d ogl=%d",
+							VERSION,
+							framesPerSecond,
 							GPUShader::SupportsVBOs() ? 1 : 0,
 							PointParticleShader::IsSupported() ? 1 : 0,
 							XENOENGINE_OPENGL );
 		}
 		if ( debugLevel >= 2 ) {
-			ufoText->Draw(	0,  Y-15, "%4.1fK/f %3ddc/f", 
+			ufoText->Draw(	0,  Y-15, "%4.1fK/f %3ddc/f",
 							(float)GPUShader::TrianglesDrawn()/1000.0f,
 							GPUShader::DrawCalls() );
 		}
@@ -706,7 +706,7 @@ void Game::DoTick( U32 _currentTime )
 								TextureManager::Instance()->CalcGPUMem()/1024,
 								TextureManager::Instance()->CacheMiss(),
 								TextureManager::Instance()->CacheReuse(),
-								TextureManager::Instance()->CacheHit() );		
+								TextureManager::Instance()->CacheHit() );
 			}
 		}
 	}
@@ -764,7 +764,7 @@ void Game::LoadModDatabase( const char* name, bool preload )
 	if ( !preload ) {
 		TextureManager::Instance()->Reload();
 		this->LoadPalettes();
-		
+
 		// Full wipe of text and text cache.
 		UFOText::Destroy();
 		UFOText::Create( database0, TextureManager::Instance()->GetTexture( "font" ), engine->GetScreenportMutable() );
@@ -835,11 +835,11 @@ void Game::JoyStick( int id, float x, float y )
 		if ( x == 0 && y == 0 ) {
 			joyStickAccum.Set( 0, 0 );
 		}
-		else { 
+		else {
 			joyStickAccum.x += x;
 			joyStickAccum.y += y;
 			if ( joyStickAccum.Length() > 4.0f ) {
-				
+
 				joyStickAccum.Normalize();
 
 				int dir = 0;
@@ -904,7 +904,7 @@ void Game::DeviceLoss()
 }
 
 
-void Game::Resize( int width, int height, int rotation ) 
+void Game::Resize( int width, int height, int rotation )
 {
 	screenport.Resize( width, height, rotation );
 	sceneStack.Top()->scene->Resize();
@@ -967,7 +967,7 @@ RenderAtom Game::CalcControllerAtom( bool dpad, int id, bool enabled, float *wid
 	// Hardcoded coordinates. That's how the OUYA port rolls.
 	static const float cx = 512.0f;
 	static const float cy = 512.0f;
-	static const float UV[] = { 
+	static const float UV[] = {
 		109, 366, 101, 100,	// O
 		2,   366, 101, 100,	// U
 		344, 332, 101, 100,	// Y
@@ -1010,8 +1010,8 @@ RenderAtom Game::CalcControllerAtom( bool dpad, int id, bool enabled, float *wid
 	if ( widthRatio ) {
 		*widthRatio = (x1-x0) / (y1-y0);
 	}
-	return RenderAtom( (const void*)( enabled ? UIRenderer::RENDERSTATE_UI_DECO : UIRenderer::RENDERSTATE_UI_DECO_DISABLED), 
-					   (const void*)texture, 
+	return RenderAtom( (const void*)( enabled ? UIRenderer::RENDERSTATE_UI_DECO : UIRenderer::RENDERSTATE_UI_DECO_DISABLED),
+					   (const void*)texture,
 					   uv.min.x, uv.min.y, uv.max.x, uv.max.y );
 }
 

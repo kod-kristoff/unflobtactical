@@ -17,7 +17,7 @@
 #include "game.h"
 #include "../engine/engine.h"
 #include "material.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "../grinliz/glstringutil.h"
 #include "ai.h"
 #include "ufosound.h"
@@ -28,7 +28,7 @@ using namespace grinliz;
 using namespace tinyxml2;
 
 // Name first name length: 6
-const char* gMaleFirstNames[64] = 
+const char* gMaleFirstNames[64] =
 {
 	"Lee",		"Jeff",		"Sean",		"Vlad",
 	"Arnold",	"Max",		"Otto",		"James",
@@ -49,7 +49,7 @@ const char* gMaleFirstNames[64] =
 };
 
 // Name first name length: 6
-const char* gFemaleFirstNames[64] = 
+const char* gFemaleFirstNames[64] =
 {
 	"Rayne",	"Anne",		"Jade",		"Suzie",
 	"Greta",	"Lilith",	"Luna",		"Riko",
@@ -72,7 +72,7 @@ const char* gFemaleFirstNames[64] =
 
 
 // Name last name length: 6
-const char* gLastNames[64] = 
+const char* gLastNames[64] =
 {
 	"Payne",	"Havok",	"Fury",		"Scharz",
 	"Bourne",	"Bond",		"Smith",	"Anders",
@@ -82,7 +82,7 @@ const char* gLastNames[64] =
 	"Blume",	"Green",	"Hale",		"Serra",
 	"Cobb",		"Frye",		"Book",		"Wedon",
 	"Ford",		"Fisher",	"Weaver",	"Hicks",
-	
+
 	"Cook",		"Morgan",	"Brown",	"Davis",
 	"Miller",	"Wilson",	"Moore",	"Taylor",
 	"Thomas",	"White",	"Harris",	"Martin",
@@ -197,7 +197,7 @@ const char* Unit::LastName() const
 const char* Unit::Rank() const
 {
 	GLASSERT( Team() == TERRAN_TEAM );
-	GLASSERT( stats.Rank() >=0 && stats.Rank() < NUM_TERRAN_RANKS ); 
+	GLASSERT( stats.Rank() >=0 && stats.Rank() < NUM_TERRAN_RANKS );
 	return gRank[ stats.Rank() ];
 }
 
@@ -245,7 +245,7 @@ const char* Unit::Rank() const
 }
 
 
-void Unit::Init(	int team,	 
+void Unit::Init(	int team,
 					int p_status,
 					int alienType,
 					int body )
@@ -265,13 +265,13 @@ void Unit::Init(	int team,
 	this->type = alienType;
 	this->body = body & 0x7fffffff;	// strip off the high bit. Makes serialization odd to deal with negative numbers.
 	GLASSERT( type >= 0 && type < Unit::NUM_ALIEN_TYPES );
-	
+
 	random.SetSeed( body ^ ((U32)this) );
 	random.Rand();
 	random.Rand();
 
 	visibilityCurrent = false;
-	
+
 	if ( team == TERRAN_TEAM )
 		ai = AI::AI_TRAVEL;
 	else
@@ -345,7 +345,7 @@ const WeaponItemDef* Unit::GetWeaponDef() const
 {
 	GLASSERT( status == STATUS_ALIVE );
 	const Item* item = GetWeapon();
-	if ( item ) 
+	if ( item )
 		return item->GetItemDef()->IsWeapon();
 	return 0;
 }
@@ -389,7 +389,7 @@ void Unit::CalcVisBounds( grinliz::Rectangle2I* b ) const
 
 	Vector2I p;
 	CalcMapPos( &p, 0 );
-	*b = Rectangle2I(	Max( 0, p.x-MAX_EYESIGHT_RANGE ), 
+	*b = Rectangle2I(	Max( 0, p.x-MAX_EYESIGHT_RANGE ),
 						Max( 0, p.y-MAX_EYESIGHT_RANGE ),
 						Min( p.x+MAX_EYESIGHT_RANGE, MAP_SIZE-1),
 						Min( p.y+MAX_EYESIGHT_RANGE, MAP_SIZE-1) );
@@ -416,7 +416,7 @@ void Unit::CalcMapPos( grinliz::Vector2I* vec, float* _rot ) const
 void Unit::Kill( TacMap* map, bool playSound )
 {
 	GLASSERT( status == STATUS_ALIVE );
-	
+
 	status = STATUS_KIA;
 	hp = 0;
 
@@ -452,7 +452,7 @@ void Unit::Kill( TacMap* map, bool playSound )
 void Unit::Leave()
 {
 	if (    status == STATUS_ALIVE
-		 || status == STATUS_UNCONSCIOUS ) 
+		 || status == STATUS_UNCONSCIOUS )
 	{
 		status = STATUS_MIA;
 	}
@@ -566,7 +566,7 @@ void Unit::Load( const XMLElement* ele, const ItemDefArr& itemDefArr )
 {
 	Free();
 
-	// Give ourselves a random body based on the element address. 
+	// Give ourselves a random body based on the element address.
 	// Hard to get good randomness here (gender bit keeps being
 	// consistent.) A combination of the element address and 'this'
 	// seems to work pretty well.
@@ -613,7 +613,7 @@ void Unit::Load( const XMLElement* ele, const ItemDefArr& itemDefArr )
 		// before loading, just so we get the correct defaults.
 		ele->QueryIntAttribute( "hp", &hp );
 		ele->QueryFloatAttribute( "tu", &tu );
-		
+
 		ele->QueryIntAttribute( "kills", &kills );
 		ele->QueryIntAttribute( "nMissions", &nMissions );
 		ele->QueryIntAttribute( "allMissionKills", &allMissionKills );
@@ -654,7 +654,7 @@ void Unit::Create(	int team,
 		case 3: gunner = 20;	break;
 		case 4: gunner = 40;	break;
 	}
-	
+
 	stats.SetRank( XPToRank( XP() ));
 
 	hp = stats.TotalHP();
@@ -662,7 +662,7 @@ void Unit::Create(	int team,
 }
 
 
-float Unit::AngleBetween( const Vector2I& p1, bool quantize ) const 
+float Unit::AngleBetween( const Vector2I& p1, bool quantize ) const
 {
 	Vector2I p0;
 	CalcMapPos( &p0, 0 );
@@ -764,9 +764,9 @@ int Unit::CalcWeaponTURemaining( float subtract ) const
 
 
 // Used by the AI
-bool Unit::FireStatistics(	int mode, 
+bool Unit::FireStatistics(	int mode,
 							const BulletTarget& target,
-							float* chanceToHit, float* chanceAnyHit, 
+							float* chanceToHit, float* chanceAnyHit,
 							float* tu, float* damagePerTU ) const
 {
 	*chanceToHit = 0.0f;
@@ -774,18 +774,18 @@ bool Unit::FireStatistics(	int mode,
 	*tu = 0.0f;
 	*damagePerTU = 0.0f;
 	bool result = false;
-	
+
 	float damage;
 
 	const WeaponItemDef* wid = GetWeaponDef();
 	if ( wid && wid->HasWeapon( mode ) ) {
 		*tu = wid->TimeUnits( mode );
 		result = GetWeapon()->IsWeapon()->FireStatistics(	mode,
-															stats.AccuracyArea(), 
+															stats.AccuracyArea(),
 															target,
-															chanceToHit, 
-															chanceAnyHit, 
-															&damage, 
+															chanceToHit,
+															chanceAnyHit,
+															&damage,
 															damagePerTU );
 	}
 	GLASSERT( InRange( *chanceToHit, 0.0f, 1.0f ) );
@@ -813,7 +813,7 @@ UnitRenderer::UnitRenderer() : tree( 0 ), model( 0 ), weapon( 0 )
 UnitRenderer::~UnitRenderer()
 {
 	GLASSERT( tree );
-	if ( model ) 
+	if ( model )
 		tree->FreeModel( model );
 	if ( weapon )
 		tree->FreeModel( weapon );
@@ -875,7 +875,7 @@ void UnitRenderer::Update( SpaceTree* _tree, const Unit* unit )
 			case ALIEN_TEAM:
 				resource = modman->GetModelResource( unit->AlienName() );
 				break;
-			
+
 			default:
 				GLASSERT( 0 );
 				break;

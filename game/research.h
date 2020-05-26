@@ -21,7 +21,7 @@
 #include "../grinliz/glstringutil.h"
 #include "../shared/glmap.h"
 #include "../shared/gamedbreader.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 class ItemDefArr;
 class ItemDef;
@@ -32,7 +32,7 @@ class Research
 public:
 	struct Item;
 
-	enum { 
+	enum {
 		MAX_ITEMS_REQUIRED = 4,
 		MAX_PREREQ = 4
 	};
@@ -43,11 +43,11 @@ public:
 		int rpRequired;
 		const char*	item[MAX_ITEMS_REQUIRED];
 		const char* prereq[MAX_PREREQ];
-		const CStringMap<Research::Task*>* taskMap;			
-		const CStringMap<Research::Item*>* itemMap;			
+		const CStringMap<Research::Task*>* taskMap;
+		const CStringMap<Research::Item*>* itemMap;
 
 		bool IsComplete() const { return rp >= rpRequired; }
-		
+
 		bool HasItems() const;
 		bool HasPreReq() const;
 	};
@@ -66,10 +66,10 @@ public:
 
 	void KickResearch();	// if no research being done, do something
 	void SetItemAcquired( const char* name );
-	
+
 	const Task* Current() const { return current; }
 	void SetCurrent( const char* name ) {
-		current = 0; 
+		current = 0;
 		if ( name ) {
 			Task* t = 0;
 			taskMap.Query( name, &t );
@@ -100,7 +100,7 @@ private:
 	const gamedb::Reader* database;
 
 	Task* current;
-	
+
 	Task* taskArr;
 	Item* itemArr;
 	int nTasks;

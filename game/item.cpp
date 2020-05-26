@@ -20,7 +20,7 @@
 #include "gamelimits.h"
 #include "../engine/particleeffect.h"
 #include "../engine/particle.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "../grinliz/glstringutil.h"
 #include "stats.h"
 
@@ -41,12 +41,12 @@ void DamageDesc::MapDamage( MapDamageDesc* damage )
 
 void ItemDef::InitBase( const char* name, const char* desc, int deco, int price, bool isAlien, const ModelResource* resource )
 {
-	this->name = name; 
-	this->desc = desc; 
-	this->deco = deco; 
+	this->name = name;
+	this->desc = desc;
+	this->deco = deco;
 	this->price = price;
 	this->isAlien = isAlien;
-	this->resource = resource; 
+	this->resource = resource;
 	this->index = 0;	// set later when added to ItemDefArr
 
 	// Replace the -# with a superscript.
@@ -78,7 +78,7 @@ void ItemDef::PrintDesc( char* buffer, int nChar ) const
 
 void WeaponItemDef::RenderWeapon(	int mode,
 									ParticleSystem* system,
-									const Vector3F& p0, 
+									const Vector3F& p0,
 									const Vector3F& p1,
 									bool useImpact,
 									U32 currentTime,
@@ -92,16 +92,16 @@ void WeaponItemDef::RenderWeapon(	int mode,
 	int first = (weapon[mode]->flags & WEAPON_EXPLOSIVE) ? TRAIL : BEAM;
 	int second = (weapon[mode]->flags & WEAPON_EXPLOSIVE) ? EXPLOSION : SPLASH;
 
-	// effects: 
+	// effects:
 	//		bolt then particle
 	//		beam
 
 	if ( first == BEAM ) {
 		BoltEffect* bolt = (BoltEffect*) system->EffectFactory( "BoltEffect" );
-		if ( !bolt ) { 
+		if ( !bolt ) {
 			bolt = new BoltEffect( system );
 		}
-		
+
 		bolt->Clear();
 		bolt->SetColor( cid->color );
 		bolt->SetSpeed( cid->speed );
@@ -226,7 +226,7 @@ Accuracy WeaponItemDef::CalcAccuracy( float accuracyArea, int mode ) const
 
 
 bool WeaponItemDef::FireStatistics( int mode,
-								    float accuracyArea, 
+								    float accuracyArea,
 									const BulletTarget& target,
 									float* chanceToHit, float* anyChanceToHit,
 									float* totalDamage, float* damagePerTU ) const
@@ -299,7 +299,7 @@ Item::Item( const ItemDefArr& itemDefArr, const char* name, int rounds )
 }
 
 
-void Item::UseRounds( int i ) 
+void Item::UseRounds( int i )
 {
 	GLASSERT( i <= rounds );
 	rounds -= i;
@@ -327,7 +327,7 @@ void Item::Load( const XMLElement* ele, const ItemDefArr& itemDefArr )
 	GLASSERT( name && *name );
 	if ( !name || !*name )
 		return;
-	
+
 	itemDef = itemDefArr.Query( name );
 	GLASSERT( itemDef );
 	rounds = itemDef->DefaultRounds();
@@ -516,7 +516,7 @@ void Storage::Load( const XMLElement* element )
 			int i=-1, n=0;
 			if ( roundElement->Attribute( "name" ) ) {
 				const ItemDef* itemDef = itemDefArr.Query( roundElement->Attribute( "name" ) );
-				if ( itemDef ) 
+				if ( itemDef )
 					i = itemDef->index;
 			}
 			else {
@@ -546,7 +546,7 @@ const ModelResource* Storage::VisualRep( bool* zRotate ) const
 				itemDef->IsWeapon()->DamageBase( 1, &d );
 
 				float score = (float)rounds[i] * d.Total();
-				
+
 				if ( score > bestScore ) {
 					bestScore = score;
 					best = itemDef;
@@ -581,7 +581,7 @@ void ItemDefArr::Add( ItemDef* itemDef )
 {
 	GLASSERT( itemDef );
 	GLASSERT( nItemDef < EL_MAX_ITEM_DEFS );
-	
+
 	arr[nItemDef] = itemDef;
 	map.Add( itemDef->name, itemDef );
 

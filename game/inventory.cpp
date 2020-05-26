@@ -15,7 +15,7 @@
 
 #include "inventory.h"
 #include "game.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "../grinliz/glstringutil.h"
 
 using namespace grinliz;
@@ -43,10 +43,10 @@ int Inventory::CalcClipRoundsTotal( const ClipItemDef* cid ) const
 void Inventory::UseClipRound( const ClipItemDef* cid )
 {
 	for( int i=0; i<NUM_SLOTS; ++i ) {
-		if (    slots[i].IsSomething() 
-			 && slots[i].IsClip() 
+		if (    slots[i].IsSomething()
+			 && slots[i].IsClip()
 			 && slots[i].IsClip() == cid
-			 && slots[i].Rounds() > 0 ) 
+			 && slots[i].Rounds() > 0 )
 		{
 			slots[i].UseRounds( 1 );
 			// clips replenish - don't destroy empties.
@@ -64,7 +64,7 @@ void Inventory::UseClipRound( const ClipItemDef* cid )
 void Inventory::RestoreClips()
 {
 	for( int i=0; i<NUM_SLOTS; ++i ) {
-		if (    slots[i].IsSomething() 
+		if (    slots[i].IsSomething()
 			 && slots[i].IsClip() )
 		{
 			Item item( slots[i].GetItemDef() );
@@ -100,7 +100,7 @@ int Inventory::UpgradeItem( const Item& item, int slot, Item* dropped )
 {
 	// Same kind?
 	int len = strlen( slots[slot].Name() );
-	if (       len > 2 
+	if (       len > 2
 			&& strncmp( slots[slot].Name(), item.Name(), len-1 )==0	// ASTL- the same
 			&& slots[slot].Name()[len-1] < item.Name()[len-1]// is it an upgrade?
 			&& IsGeneralSlotFree() )
@@ -122,7 +122,7 @@ int Inventory::AddItem( const Item& item, Item* dropped )
 
 		if ( dropped && slots[WEAPON_SLOT].IsWeapon() ) {
 			int result = UpgradeItem( item, WEAPON_SLOT, dropped );
-			if ( result >= 0 ) 
+			if ( result >= 0 )
 				return result;
 		}
 
@@ -135,7 +135,7 @@ int Inventory::AddItem( const Item& item, Item* dropped )
 	if ( item.IsArmor() ) {
 		if ( dropped && slots[ARMOR_SLOT].IsArmor() ) {
 			int result = UpgradeItem( item, ARMOR_SLOT, dropped );
-			if ( result >= 0 ) 
+			if ( result >= 0 )
 				return result;
 		}
 		if ( slots[ARMOR_SLOT].IsNothing() ) {
@@ -179,7 +179,7 @@ int Inventory::AddItem( int i, const Item& item )
 	return -1;
 }
 
-bool Inventory::RemoveItem( int slot ) 
+bool Inventory::RemoveItem( int slot )
 {
 	GLASSERT( slot >= 0 && slot < NUM_SLOTS );
 	if ( slots[slot].IsSomething() ) {
@@ -331,7 +331,7 @@ void Inventory::Save( XMLPrinter* printer ) const
 	printer->OpenElement( "Inventory" );
 	for( int i=0; i<NUM_SLOTS; ++i ) {
 		slots[i].Save( printer );
-	}	
+	}
 	printer->CloseElement();
 }
 

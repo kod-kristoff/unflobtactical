@@ -23,7 +23,7 @@
 #include "../grinliz/glvector.h"
 #include "../grinliz/glbitarray.h"
 #include "../engine/enginelimits.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 #include "stats.h"
 #include "inventory.h"
@@ -56,7 +56,7 @@ public:
 		ALIEN_JACKAL,
 		ALIEN_VIPER,
 		ALIEN_SQUID,			// 5
-		ALIEN_SPITTER,			// 6	
+		ALIEN_SPITTER,			// 6
 		ALIEN_CRAWLER,			// 7
 		NUM_ALIEN_TYPES
 	};
@@ -68,7 +68,7 @@ public:
 
 	Unit() : status( STATUS_NOT_INIT ), version( 1 ) {}
 	~Unit();
-	
+
 	void Free();
 
 	bool InUse() const			{ return status != STATUS_NOT_INIT; }
@@ -144,7 +144,7 @@ public:
 	// returns true if this fire mode is supported
 	bool FireStatistics(	int mode,
 							const BulletTarget& target,
-							float* chanceToHit, float* chanceAnyHit, 
+							float* chanceToHit, float* chanceAnyHit,
 							float* tu, float* damagePerTU ) const;
 
 	// get the accuracy of the current mode
@@ -152,7 +152,7 @@ public:
 
 	// An AI query: is this unit ready to go? Or do we need to find a new weapon?
 	bool HasGunAndAmmo( bool atReady ) const;
-	
+
 	enum {
 		NO_WEAPON = -2,
 		NO_TIME = -1
@@ -172,7 +172,7 @@ public:
 		if ( hp < stats.TotalHP() ) allMissionOvals++;
 		allMissionKills += kills;
 		stats.SetRank( XPToRank( XP() ));
-		
+
 		kills = 0;
 	}
 
@@ -217,13 +217,13 @@ public:
 	}
 
 	// WARNING: change this then change GetValue()
-	enum {	
+	enum {
 		GENDER,			// 1, 0-1
 		APPEARANCE,		// 4, 0-15
 		LAST_NAME,		// 5, 0-31
 		FIRST_NAME,		// 6, 0-63
 		APPEARANCE_EXT,	// 4, 0-15
-		LAST_NAME_EXT,	// 1, 0-1, version >= 1	
+		LAST_NAME_EXT,	// 1, 0-1, version >= 1
 		NUM_TRAITS
 	};
 	U32 GetValue( int which ) const;
@@ -246,7 +246,7 @@ private:
 	int team;		// terran, alien, civ
 	int type;		// type of alien
 	U32 body;		// describes everything! a random #
-	int version;	
+	int version;
 
 	bool				visibilityCurrent;	// if set, the visibility is current. Can be set by CalcAllVisibility()
 	grinliz::Random		random;
@@ -258,7 +258,7 @@ private:
 	float		tu;
 	int			hp;
 
-	int			kills;	
+	int			kills;
 	int			nMissions;
 	int			allMissionKills;
 	int			allMissionOvals;

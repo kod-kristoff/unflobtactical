@@ -1,6 +1,6 @@
 #include "battledata.h"
 #include "../engine/serialize.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 using namespace tinyxml2;
 
@@ -63,14 +63,14 @@ void BattleData::Load( const XMLElement* doc )
 	if ( unitsEle ) {
 		for( const XMLElement* unitElement = unitsEle->FirstChildElement( "Unit" );
 			 unitElement;
-			 unitElement = unitElement->NextSiblingElement( "Unit" ) ) 
+			 unitElement = unitElement->NextSiblingElement( "Unit" ) )
 		{
 			int t = 0;
 			unitElement->QueryIntAttribute( "team", &t );
 			Unit* unit = &units[team[t]];
 
 			unit->Load( unitElement, storage.GetItemDefArr() );
-			
+
 			team[t]++;
 
 			GLRELASSERT( team[0] <= TERRAN_UNITS_END );

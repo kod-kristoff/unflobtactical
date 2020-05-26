@@ -34,7 +34,7 @@
 #include "../grinliz/gldynamic.h"
 #include "../grinliz/glutil.h"
 #include "../grinliz/glstringutil.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 #include "modelbuilder.h"
 #include "../engine/serialize.h"
@@ -79,27 +79,27 @@ struct GlyphMetric
 GlyphMetric gGlyphMetric[GLYPH_CX*GLYPH_CY];
 
 
-void ExitError( const char* tag, 
+void ExitError( const char* tag,
 				const char* pathName,
 				const char* assetName,
 				const char* message )
 {
 	printf( "\nERROR: tag='%s' path='%s' asset='%s'. %s\n",
-		   tag ? tag : "<no tag>", 
+		   tag ? tag : "<no tag>",
 		   pathName ? pathName : "<no path>",
-		   assetName ? assetName : "<no asset>", 
+		   assetName ? assetName : "<no asset>",
 		   message );
 	exit( 1 );
 }
 
 
-void InsertTextureToDB( const char* name, 
-						const char* format, 
-						bool isImage, 
-						bool metrics, 
-						int width, 
-						int height, 
-						const void* pixels, 
+void InsertTextureToDB( const char* name,
+						const char* format,
+						bool isImage,
+						bool metrics,
+						int width,
+						int height,
+						const void* pixels,
 						int sizeInBytes,
 						bool noMip )
 {
@@ -125,7 +125,7 @@ void LoadLibrary()
 	#else
 		void* handle = grinliz::grinlizLoadLibrary( "SDL_image" );
 		if ( !handle )
-		{	
+		{
 			ExitError( "Initialization", 0, 0, "Could not load SDL_image library." );
 		}
 		libIMG_Load = (PFN_IMG_LOAD) grinliz::grinlizLoadFunction( handle, "IMG_Load" );
@@ -294,7 +294,7 @@ void ParseNames( const XMLElement* element, GLString* _assetName, GLString* _ful
 	AssignIf( assetName, element, "assetName" );
 
 	GLString fullIn = inputDirectory.c_str();
-	fullIn += filename.c_str();	
+	fullIn += filename.c_str();
 
 	GLString base, name, extension;
 	grinliz::StrSplitFilename( fullIn, &base, &name, &extension );
@@ -316,7 +316,7 @@ void ProcessTreeRec( gamedb::WItem* parent, XMLElement* ele )
 	string name = ele->Value();
 	gamedb::WItem* witem = parent->CreateChild( name.c_str() );
 
-	for( const XMLAttribute* attrib=ele->FirstAttribute(); attrib; attrib=attrib->Next() ) {		
+	for( const XMLAttribute* attrib=ele->FirstAttribute(); attrib; attrib=attrib->Next() ) {
 		int i;
 
 		if ( XML_NO_ERROR == attrib->QueryIntValue( &i ) ) {
@@ -519,8 +519,8 @@ void ProcessModel( XMLElement* model )
 	if ( model->Attribute( "modelName" ) ) {
 		usingSubModels = true;
 	}
-	
-	//GLString fullIn = inputPath.c_str(); 
+
+	//GLString fullIn = inputPath.c_str();
 	//fullIn += filename.c_str();
 	//
 	//GLString base, name, extension;
@@ -557,18 +557,18 @@ void ProcessModel( XMLElement* model )
 		ImportOFF( std::string( pathName.c_str() ), builder );
 	}
 	else {
-		ExitError( "Model", pathName.c_str(), assetName.c_str(), "Could not load asset file." ); 
+		ExitError( "Model", pathName.c_str(), assetName.c_str(), "Could not load asset file." );
 	}
 
 	const VertexGroup* vertexGroup = builder->Groups();
-	
+
 	for( int i=0; i<builder->NumGroups(); ++i ) {
 		nTotalIndex += vertexGroup[i].nIndex;
 		nTotalVertex += vertexGroup[i].nVertex;
 	}
 	if ( builder->PolyCulled() ) {
 		printf( " culled=%d", builder->PolyCulled() );
-	}	
+	}
 	printf( " groups=%d nVertex=%d nTri=%d\n", builder->NumGroups(), nTotalVertex, nTotalIndex/3 );
 	ModelHeader header;
 	header.Set( assetName.c_str(), builder->NumGroups(), nTotalVertex, nTotalIndex, builder->Bounds() );
@@ -620,7 +620,7 @@ void ProcessModel( XMLElement* model )
 
 	Vertex* pVertex = vertexBuf;
 	U16* pIndex = indexBuf;
-	
+
 	const Vertex* pVertexEnd = vertexBuf + nTotalVertex;
 	const U16* pIndexEnd = indexBuf + nTotalIndex;
 
@@ -648,7 +648,7 @@ void ProcessModel( XMLElement* model )
 
 	printf( "  total memory=%.1fk\n", (float)totalMemory / 1024.f );
 	totalModelMem += totalMemory;
-	
+
 	delete [] vertexBuf;
 	delete [] indexBuf;
 	delete builder;
@@ -679,7 +679,7 @@ void CalcFontWidths( SDL_Surface* surface )
 	// Walk all the glyphs, calculate the minimum width
 	for( int gy=0; gy<GLYPH_CY; ++gy ) {
 		for( int gx=0; gx<GLYPH_CX; ++gx ) {
-	
+
 			// In image space.
 			int y0 = gy*GLYPH_HEIGHT;
 			int y1 = y0 + GLYPH_HEIGHT - 1;
@@ -717,7 +717,7 @@ SDL_Surface* CreateScaledSurface( int w, int h, SDL_Surface* surface )
 	for( int y=0; y<h; ++y ) {
 		for( int x=0; x<w; ++x ) {
 			int r32=0, g32=0, b32=0, a32=0;
-			
+
 			int xSrc = x*sx;
 			int ySrc = y*sy;
 			for( int j=0; j<sy; ++j ) {
@@ -766,7 +766,7 @@ void BlitTexture( const XMLElement* element, SDL_Surface* target )
 			float srcY = (float)sy + (float)j*(float)sh/(float)th;
 
 			if (    srcX >= 0 && srcX <= (float)(surface->w - 2)
-				 && srcY >= 0 && srcY <= (float)(surface->h - 2)) 
+				 && srcY >= 0 && srcY <= (float)(surface->h - 2))
 			{
 				int x = (int)srcX;
 				int y = (int)srcY;
@@ -776,10 +776,10 @@ void BlitTexture( const XMLElement* element, SDL_Surface* target )
 				Color4U8 c11 = GetPixel( surface, x+1, y+1 );
 				Color4U8 c;
 				for( int i=0; i<4; ++i ) {
-					c[i] = (U8)BilinearInterpolate( (float)c00[i], 
-													(float)c10[i], 
-													(float)c01[i], 
-													(float)c11[i], 
+					c[i] = (U8)BilinearInterpolate( (float)c00[i],
+													(float)c10[i],
+													(float)c01[i],
+													(float)c11[i],
 													srcX-(float)x, srcY-(float)y );
 				}
 				PutPixel( target, targetX, targetY, c );
@@ -820,7 +820,7 @@ void ProcessTexture( XMLElement* texture )
 	int height = 0;
 	texture->QueryIntAttribute( "width", &width );
 	texture->QueryIntAttribute( "height", &height );
-	
+
 	GLString pathName, assetName;
 	ParseNames( texture, &assetName, &pathName, 0 );
 
@@ -839,7 +839,7 @@ void ProcessTexture( XMLElement* texture )
 			printf( "ERROR: width=%d height=%d\n", surface->w, surface->h );
 			ExitError( "Texture", pathName.c_str(), assetName.c_str(), "Textures must be power of 2 dimension." );
 		}
-		printf( "  Loaded: '%s' bpp=%d", 
+		printf( "  Loaded: '%s' bpp=%d",
 				assetName.c_str(),
 				surface->format->BitsPerPixel );
 	}
@@ -858,7 +858,7 @@ void ProcessTexture( XMLElement* texture )
 	bool sub=false;
 	for( XMLElement* blit=texture->FirstChildElement( "blit" );
 		 blit;
-		 blit=blit->NextSiblingElement( "blit" ) ) 
+		 blit=blit->NextSiblingElement( "blit" ) )
 	{
 		BlitTexture( blit, surface );
 		sub = true;
@@ -909,7 +909,7 @@ void ProcessTexture( XMLElement* texture )
 					for( int i=0; i<surface->w; ++i ) {
 						Color4U8 c = GetPixel( surface, i, j );
 
-						U16 p = 
+						U16 p =
 								  ( ( c.r>>3 ) << 11 )
 								| ( ( c.g>>2 ) << 5 )
 								| ( ( c.b>>3 ) );
@@ -946,7 +946,7 @@ void ProcessTexture( XMLElement* texture )
 			break;
 	}
 
-	if ( surface ) { 
+	if ( surface ) {
 		SDL_FreeSurface( surface );
 	}
 }
@@ -961,7 +961,7 @@ void ProcessPalette( XMLElement* pal )
 	float sx=0, sy=0;
 	pal->QueryFloatAttribute( "sx", &sx );
 	pal->QueryFloatAttribute( "sy", &sy );
-	
+
 	GLString pathName, assetName;
 	ParseNames( pal, &assetName, &pathName, 0 );
 
@@ -992,7 +992,7 @@ void ProcessPalette( XMLElement* pal )
 	witem->SetInt( "dy", dy );
 	witem->SetData( "colors", &colors[0], dx*dy*sizeof(Color4U8), true );
 
-	if ( surface ) { 
+	if ( surface ) {
 		SDL_FreeSurface( surface );
 	}
 }
@@ -1014,19 +1014,19 @@ void ProcessFont( XMLElement* font )
 	gamedb::WItem* witem = writer->Root()->FetchChild( "data" )
 										 ->FetchChild( "fonts" )
 										 ->CreateChild( assetName.c_str() );
-	
+
 	// Read the data tags. These describe the font.
 	static const char* tags[] = { "info", "common", 0 };
 	for( int i=0; tags[i]; ++i ) {
 		const char* tag = tags[i];
-		
+
 		const XMLElement* element = font->FirstChildElement( tag );
 		if ( !element ) {
 			char buf[90];
 			SNPrintf( buf, 90, "XML Element %s not found.", tag );
 			ExitError( "Font", pathName.c_str(), assetName.c_str(), buf );
 		}
-		
+
 		gamedb::WItem* tagItem = witem->CreateChild( tag );
 		for( const XMLAttribute* attrib=element->FirstAttribute();
 			 attrib;
@@ -1117,7 +1117,7 @@ int main( int argc, char* argv[] )
 
 	const char* xmlfile = argv[2];
 	printf( "Opening, path: '%s' filename: '%s'\n", inputDirectory.c_str(), inputFullPath.c_str() );
-	
+
 	// Test:
 	{
 		string testInput = inputDirectory + "Lenna.png";
@@ -1132,7 +1132,7 @@ int main( int argc, char* argv[] )
 																0xf000, 0x0f00, 0x00f0, 0 );
 			string out = inputDirectory + "Lenna4440.bmp";
 			SDL_SaveBMP( newSurf, out.c_str() );
-			
+
 			SDL_FreeSurface( newSurf );
 
 			// 565
@@ -1152,7 +1152,7 @@ int main( int argc, char* argv[] )
 			SDL_SaveBMP( newSurf, out2.c_str() );
 
 			SDL_FreeSurface( newSurf );
-			
+
 			SDL_FreeSurface( surface );
 		}
 	}
@@ -1203,7 +1203,7 @@ int main( int argc, char* argv[] )
 
 	int total = totalTextureMem + totalModelMem + totalDataMem;
 
-	printf( "Total memory=%dk Texture=%dk Model=%dk Data=%dk\n", 
+	printf( "Total memory=%dk Texture=%dk Model=%dk Data=%dk\n",
 			total/1024, totalTextureMem/1024, totalModelMem/1024, totalDataMem/1024 );
 	printf( "All done.\n" );
 	SDL_Quit();

@@ -19,7 +19,7 @@
 #include "scene.h"
 #include "unit.h"
 #include "gamelimits.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "../shared/gamedbreader.h"
 #include "../gamui/gamui.h"
 #include "../engine/uirendering.h"
@@ -49,7 +49,7 @@ public:
 	virtual void Activate();
 
 	// UI
-	virtual void Tap(	int count, 
+	virtual void Tap(	int count,
 						const grinliz::Vector2F& screen,
 						const grinliz::Ray& world );
 	virtual void SceneResult( int sceneID, int result );
@@ -62,7 +62,7 @@ public:
 	virtual int RenderPass( grinliz::Rectangle2I* clip3D, grinliz::Rectangle2I* clip2D )	{
 		clip3D->SetInvalid();
 		clip2D->SetInvalid();	// full screen
-		return RENDER_2D; 
+		return RENDER_2D;
 	}
 	virtual void DrawHUD();
 	virtual void Resize();
@@ -89,7 +89,7 @@ public:
 	static int CivsInScenario( int scenario ) {
 		GLASSERT( scenario != TERRAN_BASE );
 		int nCiv = 0;
-		
+
 		switch ( scenario ) {
 		case CITY:
 			nCiv = MAX_CIVS;
@@ -142,7 +142,7 @@ public:
 									const ItemDefArr&,			// if null, will have no items
 									int seed=0 );
 
-	static void GenerateAlienTeamUpper( int scenario,	
+	static void GenerateAlienTeamUpper( int scenario,
 										bool crash,
 										float rank,
 										Unit* units,
@@ -160,14 +160,14 @@ public:
 									const ItemDefArr&,
 									int seed=0 );
 
-	static void CreateMap(	tinyxml2::XMLPrinter*, 
+	static void CreateMap(	tinyxml2::XMLPrinter*,
 							int seed,
 							const SceneInfo& info,
 							const gamedb::Reader* database );
 
 	static void WriteXML( FILE* fp, const BattleSceneData* data, const ItemDefArr&, const gamedb::Reader* database  );
 
-	
+
 private:
 	enum { MAX_ITEM_MATCH = 32 };
 	static void FindNodes(	const char* set,

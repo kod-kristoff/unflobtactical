@@ -25,7 +25,7 @@
 #include "../engine/uirendering.h"
 #include "../grinliz/glperformance.h"
 #include "../engine/ufoutil.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "../shared/gamedbreader.h"
 #include "../gamui/gamui.h"
 #include "../faces/faces.h"
@@ -72,9 +72,9 @@ struct TileSetDesc {
 	Database:
 	Read only. (Constructed by the builder.)
 
-	The database (uforesource.db) contains everything the game needs to 
+	The database (uforesource.db) contains everything the game needs to
 	run. This is primarily to ease the installation on the phones. One big
-	wad file is easier to manage and take care of. All assets are compressed 
+	wad file is easier to manage and take care of. All assets are compressed
 	in the database so the size is quite good.
 
 	Models		- binary
@@ -97,7 +97,7 @@ struct TileSetDesc {
 	in a slightly different flavor, this leads to some circular code and compilation.
 */
 
-class Game : public ITextureCreator 
+class Game : public ITextureCreator
 {
 public:
 	Game( int width, int height, int rotation, const char* savepath );
@@ -116,7 +116,7 @@ public:
 	void JoyButton( int id, bool down );
 	void JoyDPad( int dir );
 	void JoyStick( int id, float x, float y );
-	
+
 	const ItemDefArr&	GetItemDefArr() const	{ return itemDefArr; }
 
 	// debugging / testing / mapmaker
@@ -238,7 +238,7 @@ public:
 	grinliz::Color4U8 MainPaletteColor( int x, int y );
 
 	void AddDatabase( const char* path );
-	const grinliz::GLString* GetModDatabasePaths() const { return modDatabase; }		
+	const grinliz::GLString* GetModDatabasePaths() const { return modDatabase; }
 	void LoadModDatabase( const char* path, bool preload );
 
 //private:
@@ -317,7 +317,7 @@ private:
 
 	gamui::RenderAtom renderAtoms[ATOM_COUNT];
 	gamui::ButtonLook buttonLooks[LOOK_COUNT];
-	
+
 	int		mapmaker_showPathing;	// 0 off, 1 path, 2 vis
 	grinliz::GLString		mapmaker_xmlFile;
 	ItemDefArr itemDefArr;

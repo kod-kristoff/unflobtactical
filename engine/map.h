@@ -26,7 +26,7 @@
 #include "../grinliz/glgeometry.h"
 
 #include "../micropather/micropather.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 #include "../shared/glmap.h"
 
@@ -58,7 +58,7 @@ public:
 
 // some strange android bug - the size of the structure gets mangled
 // by the compiler if all the fields weren't 32 bits
-struct MapItemDef 
+struct MapItemDef
 {
 	enum {
 		OBSCURES = 0x01,
@@ -85,10 +85,10 @@ struct MapItemDef
 
 	U32 Pather( int x, int y ) const {
 		GLRELASSERT( x >= 0 && y >= 0 && x < cx && y < cy );
-		
+
 		if ( !patherStr )
 			return 0;
-		
+
 		GLASSERT( (int)strlen( patherStr ) == cx*cy );
 		GLASSERT( (int)strlen( visibilityStr ) == cx*cy );
 
@@ -96,7 +96,7 @@ struct MapItemDef
 		return grinliz::HexLowerCharToInt( c );
 	}
 
-	U32 Visibility( int x, int y ) const 
+	U32 Visibility( int x, int y ) const
 	{
 		GLRELASSERT( x < cx && y < cy );
 		if ( !visibilityStr )
@@ -113,7 +113,7 @@ struct MapItemDef
 	bool CanDamage() const	{ return hp != 0xffff; }
 	bool IsDoor() const		{ return resourceOpen != 0; }
 
-	grinliz::Rectangle2I Bounds() const 
+	grinliz::Rectangle2I Bounds() const
 	{
 		return grinliz::Rectangle2I( 0, 0, cx-1, cy-1 );
 	}
@@ -128,7 +128,7 @@ struct MapDamageDesc
 
 
 // Map is crazy, crazy heavy weight. Also possible to use
-// just the IMap for minimal function. Yes, this is a 
+// just the IMap for minimal function. Yes, this is a
 // factoring problem.
 class IMap
 {
@@ -164,27 +164,27 @@ public:
 
 		U8			open;
 		U8			modelRotation;
-		U8			amountObscuring;		// if !0, amount to decrement 
+		U8			amountObscuring;		// if !0, amount to decrement
 		U16			hp;
 		U16			flags;
 		MatPacked	xform;			// xform in map coordinates
 		grinliz::Rectangle2<U8> mapBounds8;
 		float		modelX, modelZ;
-		
+
 		const MapItemDef* def;
 		Model*	model;
-		
+
 		MapItem* next;			// the 'next' after a query
 		MapItem* nextQuad;		// next pointer in the quadTree
 
-		grinliz::Rectangle2I MapBounds() const 
-		{	
+		grinliz::Rectangle2I MapBounds() const
+		{
 			return grinliz::Rectangle2I( mapBounds8.min.x, mapBounds8.min.y, mapBounds8.max.x, mapBounds8.max.y );
 		}
 		Matrix2I XForm() const {
 			Matrix2I m;
-			m.a = xform.a;	m.b = xform.b; 
-			m.c = xform.c;	m.d = xform.d; 
+			m.a = xform.a;	m.b = xform.b;
+			m.c = xform.c;	m.d = xform.d;
 			m.x = xform.x;	m.y = xform.y;
 			return m;
 		}
@@ -203,21 +203,21 @@ public:
 			xform.y = (S16)m.y;
 		}
 
-		grinliz::Vector3F ModelPos() const { 
+		grinliz::Vector3F ModelPos() const {
 			grinliz::Vector3F v = { modelX, 0.0f, modelZ };
 			return v;
 		}
 		float ModelRot() const { return (float)(modelRotation*90); }
 
 		// returns true if destroyed
-		bool DoDamage( int _hp )		
-		{	
+		bool DoDamage( int _hp )
+		{
 			if ( _hp >= hp ) {
 				hp = 0;
 				return true;
 			}
 			hp -= _hp;
-			return false;						
+			return false;
 		}
 		bool Destroyed() const { return hp == 0; }
 	};
@@ -250,7 +250,7 @@ public:
 	const Surface* GetLightMap()	{ GenerateLightMap(); return lightMap; }
 	void SetLightMap0( int x, int y, float r, float g, float b );
 
-	void GenerateSeenUnseen();	// NOT cached, so call only once/frame. (I'm not sure how to cache this effectively. Caching 
+	void GenerateSeenUnseen();	// NOT cached, so call only once/frame. (I'm not sure how to cache this effectively. Caching
 								// attempts were very buggy.) Call before DrawSeen(), DrawUnseen(), or DrawPastSeen().
 	void DrawSeen();		//< draw the map that is currently visible
 	void DrawUnseen();		//< draw the map that currently can't be seen
@@ -263,7 +263,7 @@ public:
 	void DoDamage( Model* m, const MapDamageDesc& damage, grinliz::Rectangle2I* destroyedBounds, grinliz::Vector2I* explosion  );
 	// Do damage to an entire map tile.
 	void DoDamage( int x, int y, const MapDamageDesc& damage, grinliz::Rectangle2I* destroyedBounds, grinliz::Vector2I* explosion );
-	
+
 	// Process a sub-turn: fire moves, smoke goes away, etc.
 	void DoSubTurn( grinliz::Rectangle2I* changeBounds, float fireDamagePerSubTurn );
 
@@ -300,14 +300,14 @@ public:
 
 	void DumpTile( int x, int z );
 
-	// Solves a path on the map. Returns total cost. 
+	// Solves a path on the map. Returns total cost.
 	// returns MicroPather::SOLVED, NO_SOLUTION, START_END_SAME, or OUT_OF_MEMORY
 	int SolvePath(	const void* user,
 					const grinliz::Vector2<S16>& start,
 					const grinliz::Vector2<S16>& end,
 					float* cost,
 					MP_VECTOR< grinliz::Vector2<S16> >* path );
-	
+
 	// Show the path that the unit can walk to.
 	void ShowNearPath(	const grinliz::Vector2I& unitPos,
 						const void* user,
@@ -315,7 +315,7 @@ public:
 						float maxCost,
 						const grinliz::Vector2F* range,				// array of range colorings
 						const grinliz::Vector2<S16>* dest );		// if not null, use a single destination, not all destinations
-	void ClearNearPath();	
+	void ClearNearPath();
 
 	// micropather:
 	virtual float LeastCostEstimate( void* stateStart, void* stateEnd );
@@ -398,10 +398,10 @@ protected:
 		void Add( MapItem* );
 
 		MapItem* FindItems( const grinliz::Rectangle2I& bounds, int required, int excluded );
-		MapItem* FindItems( int x, int y, int required, int excluded ) 
-		{ 
-			grinliz::Rectangle2I b( x, y, x, y ); 
-			return FindItems( b, required, excluded ); 
+		MapItem* FindItems( int x, int y, int required, int excluded )
+		{
+			grinliz::Rectangle2I b( x, y, x, y );
+			return FindItems( b, required, excluded );
 		}
 		MapItem* FindItem( const Model* model );
 
@@ -410,22 +410,22 @@ protected:
 		void MarkVisible( const grinliz::BitArray<Map::SIZE, Map::SIZE, 1>& fogOfWar );
 
 	private:
-		int WorldToNode( int x, int depth )					
-		{ 
+		int WorldToNode( int x, int depth )
+		{
 			GLRELASSERT( depth >=0 && depth < QUAD_DEPTH );
 			GLRELASSERT( x>=0 && x < Map::SIZE );
-			return x >> (LOG2_SIZE-depth); 
+			return x >> (LOG2_SIZE-depth);
 		}
 		int NodeToWorld( int x0, int depth )
 		{
 			GLRELASSERT( x0>=0 && x0 < (1<<depth) );
-			return x0 << (LOG2_SIZE-depth);			
+			return x0 << (LOG2_SIZE-depth);
 		}
-		int NodeOffset( int x0, int y0, int depth )	
-		{	
+		int NodeOffset( int x0, int y0, int depth )
+		{
 			GLRELASSERT( x0>=0 && x0 < (1<<depth) );
 			GLRELASSERT( y0>=0 && y0 < (1<<depth) );
-			return y0 * (1<<depth) + x0; 
+			return y0 * (1<<depth) + x0;
 		}
 
 		int CalcNode( const grinliz::Rectangle2<U8>& bounds, int* depth );
@@ -459,10 +459,10 @@ private:
 	void SetLightMaps( const Surface* day, const Surface* night, int x, int y, int tileRotation );
 
 	int GetPathMask( ConnectionType c, int x, int z );
-	bool Connected4( ConnectionType c, 
+	bool Connected4( ConnectionType c,
 					 const grinliz::Vector2<S16>& from,
 					 const grinliz::Vector2<S16>& delta );
-	bool Connected8( ConnectionType c, 
+	bool Connected8( ConnectionType c,
 					 const grinliz::Vector2<S16>& from,
 					 const grinliz::Vector2<S16>& delta );
 
@@ -528,7 +528,7 @@ private:
 
 	void ChangeObscured( const grinliz::Rectangle2I& bounds, int delta );
 
-	grinliz::BitArray<SIZE, SIZE, 1>			pathBlock;	// spaces the pather can't use (units are there)	
+	grinliz::BitArray<SIZE, SIZE, 1>			pathBlock;	// spaces the pather can't use (units are there)
 
 	MP_VECTOR<void*>							mapPath;
 	MP_VECTOR< micropather::StateCost >			stateCostArr;
@@ -557,9 +557,9 @@ private:
 
 	grinliz::Vector2F					mapVertex[(SIZE+1)*(SIZE+1)];		// in TEXTURE coordinates - need to scale up and swizzle for vertices.
 
-	U16									seenIndex[SIZE*SIZE*6];		
-	U16									unseenIndex[SIZE*SIZE*6];		
-	U16									pastSeenIndex[SIZE*SIZE*6];		
+	U16									seenIndex[SIZE*SIZE*6];
+	U16									unseenIndex[SIZE*SIZE*6];
+	U16									pastSeenIndex[SIZE*SIZE*6];
 };
 
 #endif // UFOATTACK_MAP_INCLUDED

@@ -14,7 +14,7 @@
 */
 
 #include "gamesettings.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "../engine/serialize.h"
 
 using namespace grinliz;
@@ -42,7 +42,7 @@ GameSettingsManager::GameSettingsManager( const char* savepath ) : SettingsManag
 	suppressCrashLog = 0;
 	playerAI = 0;
 	battleShipParty = 0;
-	confirmMove = 
+	confirmMove =
 		#ifdef ANDROID_NDK
 			1;
 		#else
@@ -102,7 +102,7 @@ void GameSettingsManager::SetConfirmMove( bool confirm )
 }
 
 
-void GameSettingsManager::SetAllowDrag( bool allow ) 
+void GameSettingsManager::SetAllowDrag( bool allow )
 {
 	if ( allowDrag != allow ) {
 		allowDrag = allow;

@@ -22,7 +22,7 @@
 #include "../gamui/gamui.h"
 #include "../engine/uirendering.h"
 #include "gamelimits.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 #include <stdio.h>
 
@@ -49,10 +49,10 @@ public:
 	Saving/Loading Notes
 	- A scene is self-saving, and has it's own save file (simpler)
 	- Game.Save() saves the current top scene, if that scene CanSave()
-	
+
 	For XenoWar:
 	- GeoScene and BattleScene CanSave()
-	
+
 	Geo		Tac
 	yes		no		geo scene
 	yes		yes		geo game, but in tactical scene. geo loads, then pushes BattleScene. When ChildActivated, loads Battlescene
@@ -77,7 +77,7 @@ public:
 	virtual void DeActivate()									{}
 
 	// UI
-	virtual void Tap(	int action, 
+	virtual void Tap(	int action,
 						const grinliz::Vector2F& screen,
 						const grinliz::Ray& world )				{}
 	virtual void Zoom( int style, float normal )				{}
@@ -104,11 +104,11 @@ public:
 		RENDER_3D = 0x02,
 	};
 
-	virtual int RenderPass( grinliz::Rectangle2I* clip3D, grinliz::Rectangle2I* clip2D )	
-	{ 
-		clip3D->SetInvalid(); 
-		clip2D->SetInvalid(); 
-		return 0; 
+	virtual int RenderPass( grinliz::Rectangle2I* clip3D, grinliz::Rectangle2I* clip2D )
+	{
+		clip3D->SetInvalid();
+		clip2D->SetInvalid();
+		return 0;
 	}
 
 	void RenderGamui2D()	{ gamui2D.Render(); }

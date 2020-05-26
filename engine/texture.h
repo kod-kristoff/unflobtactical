@@ -16,6 +16,7 @@ class ITextureCreator
 {
 public:
 	virtual void CreateTexture( Texture* t ) = 0;
+	virtual ~ITextureCreator();
 };
 
 class Texture
@@ -37,10 +38,10 @@ public:
 		PARAM_LINEAR	= 0x02,
 	};
 
-	Texture()					{ m_creator = 0; } 
+	Texture()					{ m_creator = 0; }
 
 	const char* Name() const	{ return m_name.c_str(); }
-	bool Alpha() const			{ return (m_format != RGB16); }; 
+	bool Alpha() const			{ return (m_format != RGB16); };
 	float AspectRatio() const	{ return (float)m_w / (float)m_h; }
 
 	int Format() const			{ return m_format; }
@@ -92,8 +93,8 @@ public:
 
 	bool IsTexture( const char* name );
 	Texture* GetTexture( const char* name, bool reload=false );
-	Texture* CreateTexture( const char* name, int w, int h, int format, 
-							Texture::Param parems = Texture::PARAM_NONE, 
+	Texture* CreateTexture( const char* name, int w, int h, int format,
+							Texture::Param parems = Texture::PARAM_NONE,
 							ITextureCreator* create = 0 );
 	void DeleteTexture( Texture* );
 

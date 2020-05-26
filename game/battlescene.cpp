@@ -39,7 +39,7 @@
 #include "../grinliz/glstringutil.h"
 #include "../grinliz/glgeometry.h"
 
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "battlescenedata.h"
 
 using namespace grinliz;
@@ -96,7 +96,7 @@ BattleScene::BattleScene( Game* game ) : Scene( game )
 	gamui::RenderAtom nullAtom;
 
 	RenderAtom alienTargetAtom = Game::CalcIconAtom( ICON_ALIEN_TARGETS, true );
-	alienTarget.Init( &gamui2D, alienTargetAtom, alienTargetAtom, alienTargetAtom, alienTargetAtom, nullAtom, nullAtom ); 
+	alienTarget.Init( &gamui2D, alienTargetAtom, alienTargetAtom, alienTargetAtom, alienTargetAtom, nullAtom, nullAtom );
 	alienTarget.SetVisible( false );
 
 	nameRankUI.Init( &gamui3D, game );
@@ -136,7 +136,7 @@ BattleScene::BattleScene( Game* game ) : Scene( game )
 		helpButton.SetSize( SIZE, SIZE );
 
 		nextTurnButton.Init( &gamui2D, green );
-		nextTurnButton.SetDeco( Game::CalcDecoAtom( DECO_TERRAN_TURN, true ), 
+		nextTurnButton.SetDeco( Game::CalcDecoAtom( DECO_TERRAN_TURN, true ),
 								Game::CalcDecoAtom( DECO_TERRAN_TURN, false ) );
 		nextTurnButton.SetSize( SIZE, SIZE );
 
@@ -150,9 +150,9 @@ BattleScene::BattleScene( Game* game ) : Scene( game )
 
 		moveOkayCancelUI.Init( game, &gamui2D, SIZE );
 
-		static const int controlDecoID[CONTROL_BUTTON_COUNT] = { DECO_ROTATE_CCW, 
-																 DECO_ROTATE_CW, 
-																 DECO_UNIT_PREV, 
+		static const int controlDecoID[CONTROL_BUTTON_COUNT] = { DECO_ROTATE_CCW,
+																 DECO_ROTATE_CW,
+																 DECO_UNIT_PREV,
 																 DECO_UNIT_NEXT };
 		for( int i=0; i<CONTROL_BUTTON_COUNT; ++i ) {
 			controlButton[i].Init( (i==0) ? &gamui2D : &gamui3D, green );
@@ -161,11 +161,11 @@ BattleScene::BattleScene( Game* game ) : Scene( game )
 			controlButton[i].SetVisible( !TVMode() );
 		}
 
-		UIItem* items[6] = { &invButton,  
+		UIItem* items[6] = { &invButton,
 							&nextTurnButton,
-			                &helpButton, 
+			                &helpButton,
 							&exitButton,
-							&targetButton, 
+							&targetButton,
 							&controlButton[0] };
 		for( int i=0; i<6; ++i ) {
 			((Button*)items[i])->SetSize( SIZE, SIZE );
@@ -215,7 +215,7 @@ BattleScene::BattleScene( Game* game ) : Scene( game )
 		imageR2.SetSize( SHSIZE*ratio, SHSIZE );
 	}
 
-	fireWidget.Init( &gamui3D, red );	
+	fireWidget.Init( &gamui3D, red );
 
 	{
 		gamui::RenderAtom tick0Atom = Game::CalcPaletteAtom( Game::PALETTE_GREEN, Game::PALETTE_GREEN, Game::PALETTE_BRIGHT );
@@ -256,7 +256,7 @@ BattleScene::~BattleScene()
 	ParticleSystem::Instance()->Clear();
 
 	if ( Engine::mapMakerMode ) {
-		if ( mapmaker_mapSelection ) 
+		if ( mapmaker_mapSelection )
 			engine->FreeModel( mapmaker_mapSelection );
 		if ( mapmaker_preview )
 			engine->FreeModel( mapmaker_preview );
@@ -282,14 +282,14 @@ void BattleScene::Resize()
 
 	dpad.SetVisible( TVMode() );
 
-	UIItem* items[6] = {	&invButton,  
+	UIItem* items[6] = {	&invButton,
 							&nextTurnButton,
-			                &helpButton, 
+			                &helpButton,
 							&exitButton,
-							&targetButton, 
+							&targetButton,
 							&controlButton[0] };
 
-	if ( TVMode() ) {		
+	if ( TVMode() ) {
 		LayoutCalculator layout( port.UIWidth(), port.UIHeight() );
 		layout.SetSize( GAME_ICON_SIZE(), GAME_ICON_SIZE() );
 		layout.SetGutter( GAME_GUTTER_X(), GAME_GUTTER_Y() );
@@ -328,9 +328,9 @@ void BattleScene::Activate()
 {
 	engine->SetMap( tacMap );
 	if ( !cameraSet ) {
-		engine->CameraLookAt(	(float)tacMap->Width()/2.0f, 
-								(float)tacMap->Height()/2.0f, 
-								TVMode() ? 35.0f : 25.0f, 
+		engine->CameraLookAt(	(float)tacMap->Width()/2.0f,
+								(float)tacMap->Height()/2.0f,
+								TVMode() ? 35.0f : 25.0f,
 								-45.0f, -50.0f );
 	}
 	cameraSet = true;
@@ -345,26 +345,26 @@ void BattleScene::DeActivate()
 
 
 const Model* BattleScene::GetModel( const Unit* unit )
-{ 
+{
 	if ( unit ) {
 		int index = unit - units;
 		GLASSERT( index >= 0 && index < MAX_UNITS );
 		unitRenderers[index].Update( GetEngine()->GetSpaceTree(), unit );
-		return unitRenderers[index].GetModel(); 
+		return unitRenderers[index].GetModel();
 	}
-	return 0; 
+	return 0;
 }
 
 
-const Model* BattleScene::GetWeaponModel( const Unit* unit ) 
-{ 
+const Model* BattleScene::GetWeaponModel( const Unit* unit )
+{
 	if ( unit ) {
 		int index = unit - units;
 		GLASSERT( index >= 0 && index < MAX_UNITS );
 		unitRenderers[index].Update( GetEngine()->GetSpaceTree(), unit );
 		return unitRenderers[index].GetWeapon();
 	}
-	return 0; 
+	return 0;
 }
 
 
@@ -389,8 +389,8 @@ void BattleScene::UpgradeCrawlerToSpitter( Unit* unit )
 	Color4F colorVec = { 0, 0, 0, -0.5f};
 	Vector3F particleVel = { 0, 1, 0 };
 
-	ParticleSystem::Instance()->EmitPoint( 
-		20, ParticleSystem::PARTICLE_HEMISPHERE, 
+	ParticleSystem::Instance()->EmitPoint(
+		20, ParticleSystem::PARTICLE_HEMISPHERE,
 		color, colorVec,
 		unit->Pos(), 0,
 		particleVel, 0.1f );
@@ -411,7 +411,7 @@ void BattleScene::NextTurn( bool saveOnTerranTurn )
 				for( int i=TERRAN_UNITS_START; i<TERRAN_UNITS_END; ++i )
 					units[i].NewTurn();
 				currentUnitAI = TERRAN_UNITS_START;
-			
+
 				turnImage.SetAtom( Game::CalcDecoAtom( DECO_TERRAN_TURN ) );
 				decoEffect.Play( 1000, true );
 			}
@@ -590,7 +590,7 @@ void BattleScene::Load( const XMLElement* battleElement )
 	battleElement->QueryIntAttribute( "currentTeamTurn", &currentTeamTurn );
 	turnCount = 0;
 	battleElement->QueryIntAttribute( "turnCount", &turnCount );
-	
+
 	tacMap->Load( battleElement->FirstChildElement( "Map") );
 
 	game->battleData.Load( battleElement );
@@ -647,7 +647,7 @@ void BattleScene::SetFogOfWar()
 				}
 			}
 
-			// Can always see around the lander.		
+			// Can always see around the lander.
 			const Model* landerModel = tacMap->GetLanderModel();
 			if ( landerModel ) {
 				Rectangle2I bounds;
@@ -708,11 +708,11 @@ int BattleScene::CenterRectIntersection(	const Vector2F& r,
 		Vector2F p1f = { p1.x, p1.y };
 
 		float t0, t1;
-		int result = IntersectLineLine( center, rf, 
-										p0f, p1f, 
+		int result = IntersectLineLine( center, rf,
+										p0f, p1f,
 										&outf, &t0, &t1 );
 		if (    result == grinliz::INTERSECT
-			 && t0 >= 0 && t0 <= 1 && t1 >= 0 && t1 <= 1 ) 
+			 && t0 >= 0 && t0 <= 1 && t1 >= 0 && t1 <= 1 )
 		{
 			out->Set( outf.x, outf.y );
 			return grinliz::INTERSECT;
@@ -728,7 +728,7 @@ int BattleScene::RenderPass( grinliz::Rectangle2I* clip3D, grinliz::Rectangle2I*
 	if ( Engine::mapMakerMode ) {
 		clip3D->SetInvalid();
 		clip2D->SetInvalid();
-		return RENDER_3D | RENDER_2D; 
+		return RENDER_3D | RENDER_2D;
 	}
 	else {
 		/*
@@ -740,7 +740,7 @@ int BattleScene::RenderPass( grinliz::Rectangle2I* clip3D, grinliz::Rectangle2I*
 		const Screenport& port = engine->GetScreenport();
 		clip3D->Set( 0, 0, (int)port.UIWidth(), (int)port.UIHeight() );
 		clip2D->Set(0, 0, (int)port.UIWidth(), (int)port.UIHeight() );
-		return RENDER_3D | RENDER_2D; 
+		return RENDER_3D | RENDER_2D;
 	}
 }
 
@@ -772,7 +772,7 @@ void BattleScene::SetUnitOverlays()
 			unitMoving = actionStack.Top()->unit;
 		}
 	}
-	
+
 	static const float HP_DX = 0.10f;
 	static const float HP_DY = 0.95f;
 
@@ -785,7 +785,7 @@ void BattleScene::SetUnitOverlays()
 
 			// Is the unit on screen? If so, put in a simple foot decal. Else
 			// put in an "alien that way" decal.
-			Vector2F ui;	
+			Vector2F ui;
 			engine->GetScreenport().WorldToUI( p, &ui );
 			const Rectangle2F& uiBounds = engine->GetScreenport().UIBoundsClipped3D();
 
@@ -823,7 +823,7 @@ void BattleScene::SetUnitOverlays()
 
 				targetArrow[i-ALIEN_UNITS_START].SetCenterPos( intersection.x, intersection.y );
 				float angle = atan2( (ui.y-center.y), (ui.x-center.x) );
-				angle = ToDegree( angle )+ 90.0f;	
+				angle = ToDegree( angle )+ 90.0f;
 
 				targetArrow[i-ALIEN_UNITS_START].SetRotationZ( angle );
 				targetArrow[i-ALIEN_UNITS_START].SetVisible( true );
@@ -902,7 +902,7 @@ void BattleScene::DoTick( U32 currentTime, U32 deltaTime )
 				units[i].CalcPos( &p );
 				game->particleSystem->EmitDecal( ParticleSystem::DECAL_UNIT_SIGHT,
 												 ParticleSystem::DECAL_BOTH,
-												 p, ALPHA, 0 );	
+												 p, ALPHA, 0 );
 			}
 		}
 		// Debug team targets.
@@ -912,14 +912,14 @@ void BattleScene::DoTick( U32 currentTime, U32 deltaTime )
 				units[i].CalcPos( &p );
 				game->particleSystem->EmitDecal( ParticleSystem::DECAL_TEAM_SIGHT,
 												 ParticleSystem::DECAL_BOTH,
-												 p, ALPHA, 0 );	
+												 p, ALPHA, 0 );
 			}
 		}
 #endif
 
 
 	int result = ProcessAction( deltaTime );
-	SetFogOfWar();	// fast if nothing changed.	
+	SetFogOfWar();	// fast if nothing changed.
 
 	if ( result & STEP_COMPLETE ) {
 		ProcessDoors();			// Not fast. Only calc when needed.
@@ -945,7 +945,7 @@ void BattleScene::DoTick( U32 currentTime, U32 deltaTime )
 	if ( !battleEnding && game->battleData.IsBattleOver() ) {
 		PushEndScene();
 	}
-	{ 
+	{
 		if ( currentTeamTurn == TERRAN_TEAM ) {
 			if ( selection.soldierUnit && !selection.soldierUnit->IsAlive() ) {
 				SetSelection( 0 );
@@ -956,8 +956,8 @@ void BattleScene::DoTick( U32 currentTime, U32 deltaTime )
 			// Render the target (if it is on-screen)
 			if ( HasTarget() ) {
 				fireWidget.Place(	this,
-									selection.soldierUnit, 
-									selection.targetUnit, 
+									selection.soldierUnit,
+									selection.targetUnit,
 									selection.targetPos );
 			}
 			else {
@@ -1133,9 +1133,9 @@ grinliz::Rectangle2F BattleScene::CalcInsetUIBounds()
 	Rectangle2I clip3D, clip2D;
 	RenderPass( &clip3D, &clip2D );
 	Rectangle2F uiBounds;
-	uiBounds.Set(	(float)clip3D.min.x, (float)clip3D.min.y, 
+	uiBounds.Set(	(float)clip3D.min.x, (float)clip3D.min.y,
 					(float)clip3D.max.x, (float)clip3D.max.y );
-	
+
 	Rectangle2F inset = uiBounds;
 	inset.Outset( -40 );
 	return inset;
@@ -1171,7 +1171,7 @@ void BattleScene::PushScrollOnScreen( const Vector3F& pos, bool center )
 }
 
 
-void BattleScene::SetSelection( Unit* unit ) 
+void BattleScene::SetSelection( Unit* unit )
 {
 	confirmDest.Set( -1, -1 );
 
@@ -1213,8 +1213,8 @@ void BattleScene::PushRotateAction( Unit* src, const Vector3F& dst3F, bool quant
 }
 
 
-bool BattleScene::PushShootAction( Unit* unit, 
-								   const grinliz::Vector3F& target, 
+bool BattleScene::PushShootAction( Unit* unit,
+								   const grinliz::Vector3F& target,
 								   float targetWidth, float targetHeight,
 								   int mode,
 								   float useError,
@@ -1224,7 +1224,7 @@ bool BattleScene::PushShootAction( Unit* unit,
 
 	if ( !unit->IsAlive() )
 		return false;
-	
+
 	Item* weapon = unit->GetWeapon();
 	if ( !weapon )
 		return false;
@@ -1262,7 +1262,7 @@ bool BattleScene::PushShootAction( Unit* unit,
 			Vector3F t = target;
 			if ( useError ) {
 				BulletSpread bulletSpread;
-				bulletSpread.Generate( random.Rand(), 
+				bulletSpread.Generate( random.Rand(),
 									   unit->CalcAccuracy( mode ), length,
 									   normal, target, &t );
 			}
@@ -1300,14 +1300,14 @@ void BattleScene::DoReactionFire()
 	if ( actionStack.Empty() ) {
 		react = true;
 	}
-	else { 
+	else {
 		const Action& action = *actionStack.Top();
 		if (    action.actionID == ACTION_MOVE
 			&& action.unit
 			&& action.unit->Team() == currentTeamTurn
 			&& action.type.move.pathFraction == 0 )
 		{
-			react = true;		
+			react = true;
 		}
 	}
 	if ( react ) {
@@ -1319,7 +1319,7 @@ void BattleScene::DoReactionFire()
 			// strange to get the ol' head wrapped around.
 			if (    t.team == 0				// individual
 				 && units[t.viewerID].Team() == antiTeam
-				 && units[t.targetID].Team() == currentTeamTurn ) 
+				 && units[t.targetID].Team() == currentTeamTurn )
 			{
 				// Reaction fire
 				Unit* targetUnit = &units[t.targetID];
@@ -1327,9 +1327,9 @@ void BattleScene::DoReactionFire()
 
 				if (    targetUnit->IsAlive()
 					 && GetModel( targetUnit )
-					 && srcUnit->GetWeapon() ) 
+					 && srcUnit->GetWeapon() )
 				{
-					if ( AI::SafeLineOfSight( srcUnit, 
+					if ( AI::SafeLineOfSight( srcUnit,
 											  targetUnit,
 											  srcUnit->CanFire( 1 ) ? 1 : 0,
 											  srcUnit->Team() == TERRAN_TEAM ? true : false,
@@ -1353,10 +1353,10 @@ void BattleScene::DoReactionFire()
 						facing.x = sinf( ToRadian( srcUnit->Rotation() ) );
 						facing.y = cosf( ToRadian( srcUnit->Rotation() ) );
 
-						float mod = DotProduct( facing, normalToTarget ) * 0.5f + 0.5f;  
+						float mod = DotProduct( facing, normalToTarget ) * 0.5f + 0.5f;
 						reaction *= mod;				// linear with angle.
 						float error = 2.0f - mod;		// doubles with rotation
-						
+
 						GLOUTPUT(( "reaction fire %s. (if %.2f < %.2f)\n", r <= reaction ? "Yes" : "No", r, reaction ));
 
 						if ( r <= reaction ) {
@@ -1367,7 +1367,7 @@ void BattleScene::DoReactionFire()
 
 							float targetWidth, targetHeight;
 							targetModel->CalcTargetSize( &targetWidth, &targetHeight );
-							
+
 							int shot = PushShootAction( srcUnit, target, targetWidth, targetHeight, 1, error, true );	// auto
 							if ( !shot )
 								PushShootAction( srcUnit, target, targetWidth, targetHeight, 0, error, true );	// snap
@@ -1397,7 +1397,7 @@ void BattleScene::ProcessInventoryAI( Unit* theUnit )
 
 	if ( storage ) {
 		// Exception version=490 device=win32 at 	Sat, November 27, 2010 6:25 pm
-		// The IsResupply() is used by the AI query, an the same thing needs to 
+		// The IsResupply() is used by the AI query, an the same thing needs to
 		// be used here, else we can infinte loop.
 		const WeaponItemDef* wid = storage->IsResupply( theUnit->GetWeaponDef() );
 		if ( wid ) {
@@ -1413,7 +1413,7 @@ void BattleScene::ProcessInventoryAI( Unit* theUnit )
 
 			storage->RemoveItem( wid, &item );
 #ifdef DEBUG
-			int slot = 
+			int slot =
 #endif
 			inventory->AddItem( item, 0 );
 			GLRELASSERT( slot == Inventory::WEAPON_SLOT );
@@ -1466,9 +1466,9 @@ bool BattleScene::ProcessAI()
 			case AI::ACTION_SHOOT:
 				{
 					AI_LOG(( "[ai] Unit %d SHOOT\n", currentUnitAI ));
-					bool shot = PushShootAction( &units[currentUnitAI], 
-												 aiAction.shoot.target, 
-												 aiAction.shoot.targetWidth, aiAction.shoot.targetHeight, 
+					bool shot = PushShootAction( &units[currentUnitAI],
+												 aiAction.shoot.target,
+												 aiAction.shoot.targetWidth, aiAction.shoot.targetHeight,
 												 aiAction.shoot.mode, 1.0f, false );
 					GLRELASSERT( shot );
 					if ( !shot )
@@ -1587,7 +1587,7 @@ bool BattleScene::ProcessActionCameraBounds( U32 deltaTime, Action* action )
 	bool pop = false;
 	Vector3F lookingAt;
 	float t = Travel( deltaTime, action->type.cameraBounds.speed );
-					
+
 	// Don't let it over-shoot!
 	engine->CameraLookingAt( &lookingAt );
 	Vector3F atToTarget = action->type.cameraBounds.target - lookingAt;
@@ -1627,9 +1627,9 @@ bool BattleScene::ProcessActionCameraBounds( U32 deltaTime, Action* action )
 		inset.Outset( 70 );		// There is a 50 pixel sidebar that throws off this computation. Just make sure outset is large enough.
 	}
 
-	/*GLOUTPUT(( "ProcessActionCameraBounds\n" )); 
+	/*GLOUTPUT(( "ProcessActionCameraBounds\n" ));
 	GLOUTPUT(( "Camera (%.1f,%.1f) ui (%.1f,%.1f)-(%.1f,%.1f)\n",
-				ui.x, ui.y, 
+				ui.x, ui.y,
 				inset.min.x, inset.min.y, inset.max.x, inset.max.y ));*/
 
 	if ( inset.Contains( ui ) ) {
@@ -1660,7 +1660,7 @@ int BattleScene::ProcessAction( U32 deltaTime )
 		}
 
 		switch ( action->actionID ) {
-			case ACTION_MOVE: 
+			case ACTION_MOVE:
 				{
 					// Move the unit. Be careful to never move more than one step (Travel() does not).
 					// Used to do intermedia rotation, but it was annoying. Once vision was switched
@@ -1670,7 +1670,7 @@ int BattleScene::ProcessAction( U32 deltaTime )
 					float x, z, r;
 
 					MoveAction* move = &action->type.move;
-						
+
 					move->path.GetPos( action->type.move.pathStep, move->pathFraction, &x, &z, &r );
 					// Face in the direction of walking.
 					unit->SetYRotation( r );
@@ -1690,14 +1690,14 @@ int BattleScene::ProcessAction( U32 deltaTime )
 
 					while(    (move->pathStep < move->path.pathLen-1 )
 						   && travel > 0.0f
-						   && (!(result & STEP_COMPLETE))) 
+						   && (!(result & STEP_COMPLETE)))
 					{
 						move->path.Travel( &travel, &move->pathStep, &move->pathFraction );
 						if ( move->pathFraction == 0.0f ) {
 							// crossed a path boundary.
 							GLRELASSERT( unit->TU() >= 0.99 );	// one move is one TU. Should never be less than one, but
 																// occasionally see magic floating point number bugs.
-							
+
 							Vector2<S16> v0 = move->path.GetPathAt( move->pathStep-1 );
 							Vector2<S16> v1 = move->path.GetPathAt( move->pathStep );
 							int d = abs( v0.x-v1.x ) + abs( v0.y-v1.y );
@@ -1737,8 +1737,8 @@ int BattleScene::ProcessAction( U32 deltaTime )
 					float travel = Travel( deltaTime, ROTSPEED );
 
 					float delta, bias;
-					MinDeltaDegrees( unit->Rotation(), 
-									 action->type.rotate.rotation, 
+					MinDeltaDegrees( unit->Rotation(),
+									 action->type.rotate.rotation,
 									 &delta, &bias );
 
 					if ( delta <= travel ) {
@@ -1785,9 +1785,9 @@ int BattleScene::ProcessAction( U32 deltaTime )
 					if ( action->type.camera.timeLeft > 0 ) {
 						Vector3F v;
 						for( int i=0; i<3; ++i ) {
-							v.X(i) = Interpolate(	(float)action->type.camera.time, 
+							v.X(i) = Interpolate(	(float)action->type.camera.time,
 													action->type.camera.start.X(i),
-													0.0f,							
+													0.0f,
 													action->type.camera.end.X(i),
 													(float)action->type.camera.timeLeft );
 						}
@@ -1899,16 +1899,16 @@ int BattleScene::ProcessActionShoot( Action* action, Unit* unit )
 			GLASSERT( m->AABB().Contains( intersection ) );
 			modelHit = m;
 		}
-		else if ( !impact ) {		
+		else if ( !impact ) {
 			Vector3F in, out;
 			int inResult, outResult;
 			Rectangle3F worldBounds;
-			worldBounds.Set( 0, 0, 0, 
-							(float)tacMap->Width(), 
+			worldBounds.Set( 0, 0, 0,
+							(float)tacMap->Width(),
 							8.0f,
 							(float)tacMap->Height() );
 
-			int result = IntersectRayAllAABB( ray.origin, ray.direction, worldBounds, 
+			int result = IntersectRayAllAABB( ray.origin, ray.direction, worldBounds,
 											  &inResult, &in, &outResult, &out );
 
 			GLASSERT( result == grinliz::INTERSECT );
@@ -1931,9 +1931,9 @@ int BattleScene::ProcessActionShoot( Action* action, Unit* unit )
 		if ( beam0 != beam1 ) {
 			weaponDef->RenderWeapon( mode,
 									 ParticleSystem::Instance(),
-									 beam0, beam1, 
-									 impact, 
-									 game->CurrentTime(), 
+									 beam0, beam1,
+									 impact,
+									 game->CurrentTime(),
 									 &delayTime );
 			if ( !battleEnding )
 				SoundManager::Instance()->QueueSound( weaponDef->weapon[mode]->sound );
@@ -1973,7 +1973,7 @@ int BattleScene::ProcessActionShoot( Action* action, Unit* unit )
 		h->type.hit.damageDesc = damageDesc;
 		h->type.hit.weapon = weaponDef->weapon[mode];
 		h->type.hit.p = intersection;
-		
+
 		h->type.hit.n = ray.direction;
 		h->type.hit.n.Normalize();
 
@@ -2026,7 +2026,7 @@ void BattleScene::ProcessPsiAttack( Action* action )
 	if ( success ) {
 
 		for( int i=0; i<LAYERS; ++i ) {
-			ps->EmitQuad(	ParticleSystem::RING,	
+			ps->EmitQuad(	ParticleSystem::RING,
 							colors[i],	colorVelocity,
 							pos, 0.1f,
 							velocity, 0.1f,
@@ -2057,7 +2057,7 @@ void BattleScene::GenerateCrawler( const Unit* unit, const Unit* shooter )
 {
 	if (    unit->Team() == CIV_TEAM
 		 && shooter->Team() == ALIEN_TEAM
-		 && shooter->AlienType() == Unit::ALIEN_SPITTER ) 
+		 && shooter->AlienType() == Unit::ALIEN_SPITTER )
 	{
 		for( int i=ALIEN_UNITS_START; i<ALIEN_UNITS_END; ++i ) {
 			if ( !units[i].InUse() ) {
@@ -2108,7 +2108,7 @@ int BattleScene::ProcessActionHit( Action* action )
 				hitUnit->DoDamage( action->type.hit.damageDesc, tacMap, true );
 				if ( !hitUnit->IsAlive() ) {
 					GenerateCrawler( hitUnit, action->unit );
-					selection.ClearTarget();			
+					selection.ClearTarget();
 					visibility.InvalidateUnit( hitUnit - units );
 					if ( action->unit ) {
 						action->unit->CreditKill();
@@ -2141,7 +2141,7 @@ int BattleScene::ProcessActionHit( Action* action )
 		// There is a small offset to move the explosion back towards the shooter.
 		// If it hits a wall (common) this will move it to the previous square.
 		// Also means a model hit may be a "near miss"...but explosions are messy.
-		explosion[0].Set(	(int)(action->type.hit.p.x - 0.2f*action->type.hit.n.x), 
+		explosion[0].Set(	(int)(action->type.hit.p.x - 0.2f*action->type.hit.n.x),
 							(int)(action->type.hit.p.z - 0.2f*action->type.hit.n.z) );
 
 		nExplosion = 1;
@@ -2177,14 +2177,14 @@ int BattleScene::ProcessActionHit( Action* action )
 							if ( !mapBounds.Contains( x0y0 ) )	// keep explosions in-bounds
 								continue;
 
-							// Tried to do this with the pather, but the issue with 
-							// walls being on the inside and outside of squares got 
+							// Tried to do this with the pather, but the issue with
+							// walls being on the inside and outside of squares got
 							// ugly. But the other option - ray casting - also nasty.
 							// Finally settled on a line walk with CanSee()
 							int radius2 = (x-x0)*(x-x0) + (y-y0)*(y-y0);
 							if ( radius2 > MAX_RAD_2 )
 								continue;
-						
+
 							// can the tile to be damaged be reached by the explosion?
 							// visibility is checked up to the tile before this one, else
 							// it is possible to miss because "you can't see yourself"
@@ -2212,7 +2212,7 @@ int BattleScene::ProcessActionHit( Action* action )
 								if ( !unit->IsAlive() ) {
 									visibility.InvalidateUnit( unit - units );
 									if ( unit == SelectedSoldierUnit() ) {
-										selection.ClearTarget();			
+										selection.ClearTarget();
 									}
 									if ( action->unit )
 										action->unit->CreditKill();
@@ -2224,8 +2224,8 @@ int BattleScene::ProcessActionHit( Action* action )
 							dd.MapDamage( &damage );
 							tacMap->DoDamage( x, y, damage, &destroyed, &exp );
 
-							if (    totalExplosion < MAX_EXPLOSION 
-								 && exp.x >= 0 && nExplosion < MAX_EXPLOSION ) 
+							if (    totalExplosion < MAX_EXPLOSION
+								 && exp.x >= 0 && nExplosion < MAX_EXPLOSION )
 							{
 								explosion[nExplosion++] = exp;
 								++totalExplosion;
@@ -2255,7 +2255,7 @@ int BattleScene::ProcessActionHit( Action* action )
 			smokeExplosion = false;
 		}
 	}
-	visibility.InvalidateAll( destroyed ); 
+	visibility.InvalidateAll( destroyed );
 	actionStack.Pop();
 	result |= UNIT_ACTION_COMPLETE;
 	return true;
@@ -2265,10 +2265,10 @@ int BattleScene::ProcessActionHit( Action* action )
 void BattleScene::HandleHotKeyMask( int mask )
 {
 	if ( mask & GAME_HK_NEXT_UNIT ) {
-		HandleNextUnit( 1 );		
+		HandleNextUnit( 1 );
 	}
 	if ( mask & GAME_HK_PREV_UNIT ) {
-		HandleNextUnit( -1 );		
+		HandleNextUnit( -1 );
 	}
 	if ( mask & GAME_HK_ROTATE_CCW ) {
 		HandleRotation( 45.f );
@@ -2359,8 +2359,8 @@ bool BattleScene::HandleIconTap( const gamui::UIItem* tapped )
 	if ( selection.FireMode() ) {
 		int mode = 0;
 		bool okay = fireWidget.ConvertTap( tapped, &mode );
-			
-		if ( okay ) { 
+
+		if ( okay ) {
 			// shooting creates a turn action then a shoot action.
 			GLRELASSERT( selection.soldierUnit >= 0 );
 			GLRELASSERT( selection.targetUnit >= 0 );
@@ -2475,7 +2475,7 @@ void BattleScene::SceneResult( int sceneID, int result )
 	else if ( sceneID == Game::CHARACTER_SCENE ) {
 		tacMap->ReleaseStorage( lockedStorage );
 		lockedStorage = 0;
-		ShowNearPath( 0 );	// force a redraw				
+		ShowNearPath( 0 );	// force a redraw
 	}
 	else if ( sceneID == Game::UNIT_SCORE_SCENE ) {
 		game->Save( 0, false, true );
@@ -2577,7 +2577,7 @@ void BattleScene::JoyStick( int id, const Vector2F& axis )
 	Matrix4 v = aPort.ViewMatrix3D();
 	Matrix4 vi;
 	v.Invert( &vi );
-		
+
 	Vector4F axis4 = { axis.x, axis.y, 0, 0 };
 	Vector4F dir = vi * axis4;
 
@@ -2624,7 +2624,7 @@ void BattleScene::JoyStick( int id, const Vector2F& axis )
 	Unit/Tile		select				moveTo		no move		move		Select on down is a bummer...not sure how else to handle
 	World/Tile		x					drag		x			x
 */
-void BattleScene::Tap(	int action, 
+void BattleScene::Tap(	int action,
 						const grinliz::Vector2F& view,
 						const grinliz::Ray& world )
 {
@@ -2669,13 +2669,13 @@ void BattleScene::Tap(	int action,
 			Drag( action, uiActive, view );
 
 			if (    action == GAME_TAP_UP
-				 && dragLength <= 1.0f 
+				 && dragLength <= 1.0f
 				 && actionStack.Empty() )
 			{
 				processTap = true;
 			}
 		}
-		
+
 		if ( GamuiHasCapture() ) {
 			const gamui::UIItem* item0 = gamui2D.TapUp( ui.x, ui.y );
 			const gamui::UIItem* item1 = gamui3D.TapUp( ui.x, ui.y );
@@ -2685,9 +2685,9 @@ void BattleScene::Tap(	int action,
 				HandleIconTap( item );
 			}
 		}
-		if (    action == GAME_TAP_UP 
-			 && dragLength < 1.0f 
-			 && selection.FireMode() ) 
+		if (    action == GAME_TAP_UP
+			 && dragLength < 1.0f
+			 && selection.FireMode() )
 		{
 			// Whether or not something was selected, drop back to normal mode.
 			selection.targetPos.Set( -1, -1 );
@@ -2716,7 +2716,7 @@ void BattleScene::Tap(	int action,
 			int ix = (int)pos.x;
 			int iz = (int)pos.z;
 			if (    ix >= 0 && ix < tacMap->Width()
-	  			 && iz >= 0 && iz < tacMap->Height() ) 
+	  			 && iz >= 0 && iz < tacMap->Height() )
 			{
 				const char* name = tacMap->GetItemDefName( mapmaker_currentMapItem );
 
@@ -2809,8 +2809,8 @@ void BattleScene::Tap(	int action,
 		}
 		if ( SelectedSoldierUnit() && !tappedUnit && hasTilePos ) {
 			// Not a model - use the tile
-			Vector2<S16> start   =	{	(S16)SelectedSoldierUnit()->Pos().x, 
-										(S16)SelectedSoldierUnit()->Pos().z 
+			Vector2<S16> start   =	{	(S16)SelectedSoldierUnit()->Pos().x,
+										(S16)SelectedSoldierUnit()->Pos().z
 									};
 			Vector2<S16> end = { (S16)tilePos.x, (S16)tilePos.y };
 
@@ -2837,14 +2837,14 @@ void BattleScene::Tap(	int action,
 
 void BattleScene::ShowNearPath( const Unit* unit )
 {
-	if ( unit == 0 && nearPathState.unit == 0 )		
+	if ( unit == 0 && nearPathState.unit == 0 )
 		return;		// drawing nothing correctly
 
 	bool confirmMove = GameSettingsManager::Instance()->GetConfirmMove();
 
 	if (    unit == nearPathState.unit
 		 && unit->TU() == nearPathState.tu
-		 && unit->MapPos() == nearPathState.pos 
+		 && unit->MapPos() == nearPathState.pos
 		 && ( !confirmMove || confirmDest == nearPathState.dest ) )
 	{
 		return;		// drawing something that is current.
@@ -2872,7 +2872,7 @@ void BattleScene::ShowNearPath( const Unit* unit )
 		Vector2<S16> start = { (S16)unit->MapPos().x, (S16)unit->MapPos().y };
 		float tu = unit->TU();
 
-		Vector2F range[3] = { 
+		Vector2F range[3] = {
 			{ 0.0f,	tu-autoTU },
 			{ tu-autoTU, tu-snappedTU },
 			{ tu-snappedTU, tu }
@@ -2892,7 +2892,7 @@ void BattleScene::MakePathBlockCurrent( Map* map, const void* user )
 	grinliz::BitArray<MAP_SIZE, MAP_SIZE, 1> block;
 
 	for( int i=0; i<MAX_UNITS; ++i ) {
-		if (    units[i].IsAlive() 
+		if (    units[i].IsAlive()
 			 && &units[i] != exclude ) // oops - don't cause self to not path
 		{
 			int x = (int)units[i].Pos().x;
@@ -2924,7 +2924,7 @@ Unit* BattleScene::GetUnitFromTile( int x, int z )
 		int ux = (int)units[i].Pos().x;
 		if ( ux == x ) {
 			int uz = (int)units[i].Pos().z;
-			if ( uz == z ) { 
+			if ( uz == z ) {
 				return &units[i];
 			}
 		}
@@ -2943,7 +2943,7 @@ void BattleScene::DumpTargetEvents()
 		if ( !e.team ) {
 			GLOUTPUT(( "%s Unit %d %s %d\n",
 						teams[ units[e.viewerID].Team() ],
-						e.viewerID, 
+						e.viewerID,
 						teams[ units[e.targetID].Team() ],
 						e.targetID ));
 		}
@@ -3000,7 +3000,7 @@ void BattleScene::CalcTeamTargets()
 
 				// No one on this team, prior to this check, could see the unit.
 				if ( unitVis.IsRectEmpty( teamRange ) )
-				{	
+				{
 					TargetEvent e = { 1, srcTeam, dst };
 					targetEvents.Push( e );
 					//e.Dump();
@@ -3039,9 +3039,9 @@ void BattleScene::DragUnitMove( const grinliz::Vector2I& map )
 	Vector2<S16> end   = { map.x, map.y };
 
 	bool visible = false;
-	if (    end != start 
-			&& end.x >= 0 && end.x < tacMap->Width() 
-			&& end.y >= 0 && end.y < tacMap->Height() ) 
+	if (    end != start
+			&& end.x >= 0 && end.x < tacMap->Width()
+			&& end.y >= 0 && end.y < tacMap->Height() )
 	{
 		if ( confirmDest.x < 0 || TVMode() ) {
 			float cost;
@@ -3085,7 +3085,7 @@ void BattleScene::DragUnitMove( const grinliz::Vector2I& map )
 			int result = tacMap->SolvePath( selection.soldierUnit, start, end, &cost, &pathCache );
 			if ( result == micropather::MicroPather::SOLVED && cost <= selection.soldierUnit->TU() ) {
 				confirmDest.Set( map.x, map.y );
-				ShowNearPath( selection.soldierUnit ); 
+				ShowNearPath( selection.soldierUnit );
 			}
 		}
 		*/
@@ -3101,9 +3101,9 @@ void BattleScene::DragUnitEnd( const grinliz::Vector2I& map )
 	Vector2<S16> start = { (S16)selection.soldierUnit->MapPos().x, (S16)selection.soldierUnit->MapPos().y };
 	Vector2<S16> end   = { map.x, map.y };
 
-	if (    end != start 
-			&& end.x >= 0 && end.x < tacMap->Width() 
-			&& end.y >= 0 && end.y < tacMap->Height() ) 
+	if (    end != start
+			&& end.x >= 0 && end.x < tacMap->Width()
+			&& end.y >= 0 && end.y < tacMap->Height() )
 	{
 		float cost;
 
@@ -3134,11 +3134,11 @@ void BattleScene::Drag( int action, bool uiActivated, const grinliz::Vector2F& v
 {
 	Vector2F ui;
 	engine->GetScreenport().ViewToUI( view, &ui );
-	
+
 	bool panning = (action & GAME_TAP_PANNING) ? true : false;
 	action = action & GAME_TAP_MASK;
-	
-	switch ( action ) 
+
+	switch ( action )
 	{
 		case GAME_TAP_DOWN:
 		{
@@ -3294,7 +3294,7 @@ void BattleScene::DrawHUD()
 			tacMap->DumpTile( (int)mapmaker_mapSelection->X(), (int)mapmaker_mapSelection->Z() );
 
 			const char* desc = SelectionDesc();
-			UFOText::Instance()->Draw(	0,  16, "(%2d,%2d) 0x%2x:'%s'", 
+			UFOText::Instance()->Draw(	0,  16, "(%2d,%2d) 0x%2x:'%s'",
 										(int)mapmaker_mapSelection->X(), (int)mapmaker_mapSelection->Z(),
 										mapmaker_currentMapItem, desc );
 		}
@@ -3379,7 +3379,7 @@ float MotionPath::DeltaToRotation( int dx, int dy )
 	GLRELASSERT( dx >= -1 && dx <= 1 );
 	GLRELASSERT( dy >= -1 && dy <= 1 );
 
-	if ( dx == 1 ) 
+	if ( dx == 1 )
 		if ( dy == 1 )
 			rot = 45.0f;
 		else if ( dy == 0 )
@@ -3402,7 +3402,7 @@ float MotionPath::DeltaToRotation( int dx, int dy )
 }
 
 
-void MotionPath::Init( const MP_VECTOR< Vector2<S16> >& pathCache ) 
+void MotionPath::Init( const MP_VECTOR< Vector2<S16> >& pathCache )
 {
 	GLRELASSERT( pathCache.size() <= (unsigned)MAX_TU );
 	GLRELASSERT( pathCache.size() > 1 );	// at least start and end
@@ -3416,7 +3416,7 @@ void MotionPath::Init( const MP_VECTOR< Vector2<S16> >& pathCache )
 	}
 }
 
-		
+
 void MotionPath::CalcDelta( int i0, int i1, grinliz::Vector2I* vec, float* rot )
 {
 	Vector2<S16> path0 = GetPathAt( i0 );
@@ -3521,7 +3521,7 @@ void BattleScene::MouseMove( int x, int y )
 									vel,
 									0.0f,			// velFuzz
 									2000 );
-	}	
+	}
 }
 #endif
 
@@ -3545,9 +3545,9 @@ void BattleScene::UpdatePreview()
 		if ( name && *name ) {
 			const MapItemDef* mapItemDef = tacMap->GetItemDef( name );
 
-			mapmaker_preview = tacMap->CreatePreview(	(int)mapmaker_mapSelection->X(), 
-														(int)mapmaker_mapSelection->Z(), 
-														mapItemDef, 
+			mapmaker_preview = tacMap->CreatePreview(	(int)mapmaker_mapSelection->X(),
+														(int)mapmaker_mapSelection->Z(),
+														mapItemDef,
 														(int)(mapmaker_mapSelection->GetRotation()/90.0f) );
 
 			if ( mapmaker_preview ) {
@@ -3578,10 +3578,10 @@ void BattleScene::MouseMove( int x, int y )
 			newX = Clamp( newX, 0, Map::SIZE-1 );
 			newZ = Clamp( newZ, 0, Map::SIZE-1 );
 			mapmaker_mapSelection->SetPos( (float)newX + 0.5f, 0.0f, (float)newZ + 0.5f );
-	
+
 			UpdatePreview();
 		}
-	}	
+	}
 #if 0
 	{
 		grinliz::Matrix4 mvpi;
@@ -3606,7 +3606,7 @@ void BattleScene::MouseMove( int x, int y )
 										0.0f,			// posFuzz
 										vel,
 										0.0f );
-		}	
+		}
 	}
 #endif
 }

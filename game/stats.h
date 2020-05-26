@@ -19,7 +19,7 @@
 #include "../grinliz/gldebug.h"
 #include "../grinliz/gltypes.h"
 #include "../grinliz/glvector.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 #include "gamelimits.h"
 
 #include <stdio.h>
@@ -34,7 +34,7 @@ class Random;
 /*
 	STR, DEX, PSY:	fixed at character creation.
 	RANK:			computed by experience		[ 0, NUM_RANKS-1 ]
-	
+
 	MEDALS:			awarded for field action
 
 	HP		 = f( STR )							[ 1, TRAIT_MAX ]

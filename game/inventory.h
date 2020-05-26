@@ -17,7 +17,7 @@
 #define UFOATTACK_INVENTORY_INCLUDED
 
 #include "item.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 class ItemDef;
 class Engine;
@@ -25,7 +25,7 @@ class Game;
 class TiXmlElement;
 
 
-/*  
+/*
 	A W		- carried
 	M M M	- backpack
 	M M M
@@ -68,7 +68,7 @@ public:
 	int CalcClipRoundsTotal( const ClipItemDef* ) const;
 	void UseClipRound( const ClipItemDef* );
 	void RestoreClips();
-	
+
 	Item* ArmedWeapon();				// null if no weapon ready
 	const Item* ArmedWeapon() const;	// null if no weapon ready
 

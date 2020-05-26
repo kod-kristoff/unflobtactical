@@ -17,7 +17,7 @@
 #define TACMAP_INCLUDED
 
 #include "../engine/map.h"
-#include "../tinyxml2/tinyxml2.h"
+#include <tinyxml2/tinyxml2.h>
 
 
 class Storage;
@@ -51,7 +51,7 @@ public:
 	// ALIEN_TEAM, guard or scout - on the map metadata
 	//
 	void PopLocation( int team, bool guard, grinliz::Vector2I* pos, float* rotation );
-	
+
 	virtual int GetNumItemDef()	{ return NUM_ITEM_DEF; }
 	virtual const char* GetItemDefName( int i );
 	virtual const MapItemDef* GetItemDef( const char* name );
