@@ -2,23 +2,23 @@
 Copyright (c) 2000-2012 Lee Thomason (www.grinninglizard.com)
 Grinning Lizard Utilities.
 
-This software is provided 'as-is', without any express or implied 
-warranty. In no event will the authors be held liable for any 
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any
 damages arising from the use of this software.
 
-Permission is granted to anyone to use this software for any 
-purpose, including commercial applications, and to alter it and 
+Permission is granted to anyone to use this software for any
+purpose, including commercial applications, and to alter it and
 redistribute it freely, subject to the following restrictions:
 
-1. The origin of this software must not be misrepresented; you must 
-not claim that you wrote the original software. If you use this 
-software in a product, an acknowledgment in the product documentation 
+1. The origin of this software must not be misrepresented; you must
+not claim that you wrote the original software. If you use this
+software in a product, an acknowledgment in the product documentation
 would be appreciated but is not required.
 
-2. Altered source versions must be plainly marked as such, and 
+2. Altered source versions must be plainly marked as such, and
 must not be misrepresented as being the original software.
 
-3. This notice may not be removed or altered from any source 
+3. This notice may not be removed or altered from any source
 distribution.
 */
 
@@ -27,6 +27,8 @@ distribution.
 #define GRINLIZ_RECTANGLE_INCLUDED
 
 #include "glvector.h"
+
+#include <climits>
 
 namespace grinliz {
 
@@ -57,7 +59,7 @@ struct Rectangle2
 		return ( min.x <= max.x ) && ( min.y <= max.y );
 	}
 
-	/** Creates the rectangle from 2 points, which can be 
+	/** Creates the rectangle from 2 points, which can be
 		in any relationship to each other.
 	*/
 	void FromPair( T x0, T y0, T x1, T y1 )
@@ -79,7 +81,7 @@ struct Rectangle2
 			return false;
 		}
 		return true;
-	}	
+	}
 
 	bool Intersect( const Vector2<T>& point ) const
 	{
@@ -167,7 +169,7 @@ struct Rectangle2
 
 
 	void DoUnion( const Vector2<T>& v ) { DoUnion( v.x, v.y ); }
- 
+
  	/// Turn this into the intersection.
 	void DoIntersection( const Rectangle2<T>& rect )
 	{
@@ -199,7 +201,7 @@ struct Rectangle2
 
 	/// Query the edge of the rectangle. The edges are ordered: bottom, right, top, left.
 	void Edge( int i, Vector2< T >* head, Vector2< T >* tail ) const
-	{	
+	{
 		switch ( i ) {
 			case 0:		tail->Set( min.x, min.y );	head->Set( max.x, min.y );	break;
 			case 1:		tail->Set( max.x, min.y );	head->Set( max.x, max.y );	break;
@@ -211,7 +213,7 @@ struct Rectangle2
 
 	/// Query the corners of the rectangle.
 	void Corner( int i, Vector2< T >* c ) const
-	{	
+	{
 		switch ( i ) {
 			case 0:		c->Set( min.x, min.y );	break;
 			case 1:		c->Set( max.x, min.y );	break;
@@ -246,7 +248,7 @@ struct Rectangle2I : public Rectangle2< int >
 	Rectangle2I( int _xmin, int _ymin, int _xmax, int _ymax ) {
 		min.Set( _xmin, _ymin );
 		max.Set( _xmax, _ymax );
-	} 
+	}
 
 	enum { INVALID = INT_MIN };
 
@@ -262,10 +264,10 @@ struct Rectangle2F : public Rectangle2< float >
 {
 	Rectangle2F() { min.Zero(); max.Zero(); }
 	Rectangle2F( const Rectangle2F& rhs ) { *this = rhs; }
-	Rectangle2F( float _xmin, float _ymin, float _xmax, float _ymax ) { 
+	Rectangle2F( float _xmin, float _ymin, float _xmax, float _ymax ) {
 		min.Set( _xmin, _ymin );
 		max.Set( _xmax, _ymax );
-	} 
+	}
 
 	float Width()	 const 	{ return max.x - min.x; }		///< width of the rectangle
 	float Height() const	{ return max.y - min.y; }		///< height of the rectangle
@@ -273,7 +275,7 @@ struct Rectangle2F : public Rectangle2< float >
 };
 
 
-template< class T > 
+template< class T >
 struct Rectangle3
 {
 	Vector3< T > min;
@@ -317,7 +319,7 @@ struct Rectangle3
 			return false;
 		}
 		return true;
-	}	
+	}
 
 	bool Intersect( const Vector3<T>& point ) const
 	{
@@ -403,7 +405,7 @@ struct Rectangle3
 		min.z = grinliz::Min( min.z, vec.z );
 		max.z = grinliz::Max( max.z, vec.z );
 	}
-	
+
 	/// Turn this into the intersection.
 	void DoIntersection( const Rectangle2<T>& rect )
 	{
@@ -447,10 +449,10 @@ struct Rectangle3I : public Rectangle3< int >
 {
 	Rectangle3I() { min.Zero(); max.Zero(); }
 	Rectangle3I( const Rectangle3I& rhs ) { *this = rhs; }
-	Rectangle3I( int _xmin, int _ymin, int _zmin, int _xmax, int _ymax, int _zmax )	{ 
+	Rectangle3I( int _xmin, int _ymin, int _zmin, int _xmax, int _ymax, int _zmax )	{
 		min.Set( _xmin, _ymin, _zmin );
 		max.Set( _xmax, _ymax, _zmax );
-	} 
+	}
 	enum { INVALID = INT_MIN };
 
 	int SizeX()	 const 	{ return max.x - min.x + 1; }		///< width of the rectangle
@@ -468,10 +470,10 @@ struct Rectangle3F : public Rectangle3< float >
 {
 	Rectangle3F() { min.Zero(); max.Zero(); }
 	Rectangle3F( const Rectangle3F& rhs ) { *this = rhs; }
-	Rectangle3F( float _xmin, float _ymin, float _zmin, float _xmax, float _ymax, float _zmax )	{ 
+	Rectangle3F( float _xmin, float _ymin, float _zmin, float _xmax, float _ymax, float _zmax )	{
 		min.Set( _xmin, _ymin, _zmin );
 		max.Set( _xmax, _ymax, _zmax );
-	} 
+	}
 	float SizeX() const 	{ return max.x - min.x; }		///< width of the rectangle
 	float SizeY() const		{ return max.y - min.y; }		///< height of the rectangle
 	float SizeZ() const		{ return max.z - min.z; }		///< depth of the rectangle
@@ -479,8 +481,8 @@ struct Rectangle3F : public Rectangle3< float >
 	float Size( int i ) const { return max.X(i) - min.X(i); }
 
 	#ifdef DEBUG
-	void Dump() { 
-		GLOUTPUT(( "(%.1f,%.1f,%.1f)-(%.1f,%.1f,%.1f)", min.x, min.y, min.z, max.x, max.y, max.z )); 
+	void Dump() {
+		GLOUTPUT(( "(%.1f,%.1f,%.1f)-(%.1f,%.1f,%.1f)", min.x, min.y, min.z, max.x, max.y, max.z ));
 	}
 	#endif
 };
