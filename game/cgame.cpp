@@ -17,7 +17,7 @@
 #include "cgame.h"
 #include "game.h"
 
-#if defined( UFO_WIN32_SDL )
+#if defined( UFO_WIN32_SDL ) || defined( UFO_LINUX_SDL )
 static const char* winResourcePath = "./res/uforesource.db";
 #endif
 
@@ -150,7 +150,7 @@ void GameDoTick( void* handle, unsigned int timeInMSec )
 }
 
 
-void GameCameraGet( void* handle, int param, float* value ) 
+void GameCameraGet( void* handle, int param, float* value )
 {
 	CheckThread check;
 
@@ -195,16 +195,16 @@ void PlatformPathToResource( char* buffer, int bufferLen, int* offset, int* leng
 #if defined( UFO_IPHONE )
 	CFStringRef nameRef = CFStringCreateWithCString( 0, name, kCFStringEncodingWindowsLatin1 );
 	CFStringRef extensionRef = CFStringCreateWithCString( 0, extension, kCFStringEncodingWindowsLatin1 );
-	
-	CFBundleRef mainBundle = CFBundleGetMainBundle();	
+
+	CFBundleRef mainBundle = CFBundleGetMainBundle();
 	CFURLRef imageURL = CFBundleCopyResourceURL( mainBundle, nameRef, extensionRef, NULL );
 	if ( !imageURL ) {
 		GLOUTPUT(( "Error loading '%s' '%s'\n", name, extension ));
 	}
 	GLASSERT( imageURL );
-		
+
 	CFURLGetFileSystemRepresentation( imageURL, true, (unsigned char*)buffer, bufferLen );
-#elif defined( UFO_WIN32_SDL )
+#elif defined( UFO_WIN32_SDL ) || defined( UFO_LINUX_SDL )
 	grinliz::StrNCpy( buffer, winResourcePath, bufferLen );
 	*offset = 0;
 	*length = 0;
@@ -223,7 +223,7 @@ const char* PlatformName()
 	if ( TVMode() ) {
 		return "tv";
 	}
-#if defined( UFO_WIN32_SDL )
+#if defined( UFO_WIN32_SDL ) || defined( UFO_LINUX_SDL )
 	return "pc";
 #elif defined (ANDROID_NDK)
 	return "android";
@@ -251,7 +251,7 @@ int GamePopSound( void* handle, int* database, int* offset, int* size )
 	CheckThread check;
 
 	Game* game = (Game*)handle;
-	bool result = game->PopSound( database, offset, size );	
+	bool result = game->PopSound( database, offset, size );
 	return (result) ? 1 : 0;
 }
 

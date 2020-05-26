@@ -16,7 +16,7 @@
 #include "research.h"
 #include "../grinliz/glstringutil.h"
 #include "../engine/serialize.h"
-#include <tinyxml2/tinyxml2.h>
+#include "../tinyxml2/tinyxml2.h"
 #include "../grinliz/glstringutil.h"
 #include "item.h"
 
@@ -228,7 +228,7 @@ void Research::Save( XMLPrinter* printer )
 {
 	printer->OpenElement( "Research" );
 	if ( current )
-		printer->PushAttribute( "current", current-taskArr );
+		printer->PushAttribute( "current", (int)(current-taskArr) );
 
 	for( int i=0; i<nTasks; ++i ) {
 		printer->OpenElement( "Task" );

@@ -34,7 +34,7 @@
 #include "../grinliz/gldynamic.h"
 #include "../grinliz/glutil.h"
 #include "../grinliz/glstringutil.h"
-#include <tinyxml2/tinyxml2.h>
+#include "../tinyxml2/tinyxml2.h"
 
 #include "modelbuilder.h"
 #include "../engine/serialize.h"
